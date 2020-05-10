@@ -33,11 +33,11 @@ public enum HttpResult {
      */
     SYSTEM_ERROR("系统错误", 3);
 
-    private int code;
+    private Integer code;
 
     private String message;
 
-    HttpResult(String message, int code) {
+    HttpResult(String message, Integer code) {
         this.code = code;
         this.message = message;
     }
