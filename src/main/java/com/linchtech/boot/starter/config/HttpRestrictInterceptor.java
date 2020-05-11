@@ -28,12 +28,11 @@ import java.util.concurrent.atomic.LongAdder;
  */
 @Slf4j
 public class HttpRestrictInterceptor implements HandlerInterceptor {
-
+/*
     private HttpProperties httpProperties;
 
     private ObjectMapper objectMapper;
 
-    // FIXME: 2019/9/26 async http should change logic to fit two request match one response
     private Map<String, LongAdder> mappingCountMap = new ConcurrentHashMap<>();
 
     private ThreadLocal<List<String>> matchedMappingGroups = new ThreadLocal<>();
@@ -133,5 +132,5 @@ public class HttpRestrictInterceptor implements HandlerInterceptor {
         } finally {
             matchedMappingGroups.remove();
         }
-    }
+    }*/
 }
