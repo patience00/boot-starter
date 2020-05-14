@@ -10,6 +10,7 @@ import springfox.documentation.service.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 107
@@ -22,6 +23,7 @@ public class SwaggerProperties {
 	private boolean enable = false;
 
 	private List<String> basePackages;
+	private Map<String, String> headers;
 
 	private ApiInfo apiInfo = new SwaggerApiInfo();
 
@@ -30,7 +32,6 @@ public class SwaggerProperties {
 	private String url;
 	private String apiVersion;
 
-	private List<Parameter> headers;
 	private String apiLicense;
 	private String apiLicenseUrl;
 

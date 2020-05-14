@@ -9,12 +9,19 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
+import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 107
@@ -33,10 +40,28 @@ public class SwaggerConfig {
 	 */
 	@Bean
 	public Docket api(SwaggerProperties swaggerProperties, TypeResolver typeResolver) {
+		List<Parameter> headers = new ArrayList<>();
+		Map<String, String> headerKeys = swaggerProperties.getHeaders();
+		if (!CollectionUtils.isEmpty(headerKeys)) {
+			// 添加自定义header
+			for (String key : headerKeys.keySet()) {
+				ParameterBuilder parameterBuilder = new ParameterBuilder();
+				parameterBuilder.allowEmptyValue(false);
+				parameterBuilder.defaultValue(headerKeys.get(key));
+				parameterBuilder.name(key);
+				parameterBuilder.required(false);
+				parameterBuilder.description(key);
+				parameterBuilder.hidden(false);
+				parameterBuilder.allowMultiple(false);
+				parameterBuilder.modelRef(new ModelRef("string"));
+				parameterBuilder.parameterType("header");
+				headers.add(parameterBuilder.build());
+			}
+		}
 		ApiSelectorBuilder apiSelectorBuilder = new Docket(DocumentationType.SWAGGER_2)
 				.apiInfo(swaggerProperties.getApiInfo())
 				.enable(swaggerProperties.isEnable())
-				.globalOperationParameters(swaggerProperties.getHeaders())
+				.globalOperationParameters(headers)
 				.select()
 				.paths(PathSelectors.any());
 		if (CollectionUtils.isEmpty(swaggerProperties.getBasePackages())) {
