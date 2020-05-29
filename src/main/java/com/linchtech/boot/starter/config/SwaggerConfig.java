@@ -4,7 +4,6 @@ import com.fasterxml.classmate.TypeResolver;
 import com.linchtech.boot.starter.common.ResultVO;
 import com.linchtech.boot.starter.properties.SwaggerProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

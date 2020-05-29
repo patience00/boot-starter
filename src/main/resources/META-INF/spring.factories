@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.linchtech.boot.starter.config.CustomResponseConfiguration,\
+  com.linchtech.boot.starter.config.ElasticSearchConfig,\
   com.linchtech.boot.starter.config.SwaggerConfig

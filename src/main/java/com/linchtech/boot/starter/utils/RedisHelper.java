@@ -48,7 +48,7 @@ public class RedisHelper {
         }
 
         try {
-            log.warn("key:{},同时有多个定位,锁等待中", key);
+            log.warn("key:{},锁等待中", key);
             Thread.sleep(waitInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();

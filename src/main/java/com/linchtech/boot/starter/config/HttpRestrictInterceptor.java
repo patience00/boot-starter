@@ -7,17 +7,12 @@ import com.linchtech.boot.starter.properties.HttpProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-import springfox.documentation.service.ApiInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -28,7 +23,6 @@ import java.util.concurrent.atomic.LongAdder;
  */
 @Slf4j
 public class HttpRestrictInterceptor implements HandlerInterceptor {
-/*
     private HttpProperties httpProperties;
 
     private ObjectMapper objectMapper;
@@ -132,5 +126,5 @@ public class HttpRestrictInterceptor implements HandlerInterceptor {
         } finally {
             matchedMappingGroups.remove();
         }
-    }*/
+    }
 }
