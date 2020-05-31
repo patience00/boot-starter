@@ -29,6 +29,8 @@ public class HttpProperties {
     private Map<String, Restrict> restricts = new HashMap<>();
     private List<CorsMapping> corsMappings = new ArrayList<>();
 
+    private List<String> emailAddr = new ArrayList<>();
+
     @Data
     public static class Rewrite {
         private List<String> excludePackages;

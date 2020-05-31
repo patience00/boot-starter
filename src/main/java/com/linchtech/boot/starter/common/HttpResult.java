@@ -5,7 +5,6 @@ import lombok.Getter;
 /**
  * @author 107
  * @create 2018-07-23 10:24
- * @desc
  **/
 @Getter
 public enum HttpResult {

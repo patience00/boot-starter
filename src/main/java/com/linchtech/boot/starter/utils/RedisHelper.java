@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 /**
  * @author 107
  * @date 2020-05-10 21:02
- * @description
  **/
 @Component
 @Slf4j

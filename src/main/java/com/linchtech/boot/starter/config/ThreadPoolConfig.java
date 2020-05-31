@@ -31,6 +31,10 @@ public class ThreadPoolConfig {
                 new ArrayBlockingQueue<>(2000), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
     }
 
+    /**
+     * 用于spring中的{@link org.springframework.scheduling.annotation.Scheduled} 多个任务之间异步执行
+     * @return
+     */
     @Bean(value = "scheduleThreadPool")
     public ScheduledExecutorService scheduledExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()

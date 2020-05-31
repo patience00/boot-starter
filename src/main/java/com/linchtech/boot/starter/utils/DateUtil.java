@@ -47,7 +47,6 @@ public final class DateUtil {
         return toTimeSeconds(new Date());
     }
 
-
     /**
      * 获取指定日期从0点开始经过的秒数，范围在0--86400之间
      *
@@ -60,10 +59,8 @@ public final class DateUtil {
                 .get(ChronoField.SECOND_OF_DAY);
     }
 
-
     /**
      * 获取某天0点0分0秒的时间戳
-     *
      * @param mill
      * @return
      */
@@ -127,13 +124,22 @@ public final class DateUtil {
         return Integer.parseInt(now);
     }
 
-    public static String yyyyMMddHH(Date date) {
+    /**
+     * 转换时间为yyyy-MM-dd HH:mm:ss格式
+     * @param date
+     * @return
+     */
+    public static String yyyyMMddHHmmss(Date date) {
         SimpleDateFormat simpleDateFormat = YYYY_MM_DD_HH_THREAD_LOCAL.get();
         String format = simpleDateFormat.format(date);
         YYYY_MM_DD_HH_THREAD_LOCAL.remove();
         return format;
     }
 
+    /**
+     * 将当前时间转换为yyyyMMdd格式
+     * @return String
+     */
     public static String yyyyMMdd() {
         SimpleDateFormat simpleDateFormat = yyyy_MM_dd.get();
         String format = simpleDateFormat.format(new Date(System.currentTimeMillis()));
@@ -141,6 +147,11 @@ public final class DateUtil {
         return format;
     }
 
+    /**
+     * 将目标时间转换为yyyyMMdd格式
+     * @param date
+     * @return
+     */
     public static String yyyyMMdd(Date date) {
         SimpleDateFormat simpleDateFormat = yyyy_MM_dd.get();
         String format = simpleDateFormat.format(date);

@@ -8,19 +8,28 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utils {
+public class LinchStringUtils {
     private static final String UNDERLINE = "_";
 
-
+    /**
+     * 默认将inputStream转换为utf-8 字符串
+     * @param in
+     * @return utf-8 字符串
+     * @throws UnsupportedEncodingException
+     */
     public static String convertStreamToString(InputStream in) throws UnsupportedEncodingException {
-        //BufferedReader reader = new BufferedReader(new InputStreamReader(in));  
         return convertStreamToString(in, "UTF-8");
     }
 
-
+    /**
+     * 将inputStream转换为字符串
+     * @param in
+     * @param charset 编码格式
+     * @return 字符串
+     * @throws UnsupportedEncodingException
+     */
     public static String convertStreamToString(InputStream in,
                                                String charset) throws UnsupportedEncodingException {
-        //BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         BufferedReader reader = new BufferedReader(new InputStreamReader(in, charset));
         StringBuilder sb = new StringBuilder();
         String line = null;
@@ -43,7 +52,7 @@ public class Utils {
     /**
      * 替换字符串中的特殊字符
      *
-     * @return
+     * @return 去除特殊字符后的字符串
      */
     public static String replaceOtherSymbol(String str) {
         String regEx = "([\\u4e00-\\u9fa5]|\\w)+";

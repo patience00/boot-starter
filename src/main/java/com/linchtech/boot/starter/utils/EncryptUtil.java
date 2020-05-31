@@ -13,7 +13,6 @@ import java.util.Random;
  *
  * @author: 107
  * @date: 2019-03-19 17:30
- * @version: 1.0
  */
 public class EncryptUtil {
     private static final int HASH_ITERATIONS = 1000;

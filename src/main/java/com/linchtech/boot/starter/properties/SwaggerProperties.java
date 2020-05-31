@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
-import springfox.documentation.service.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,9 @@ public class SwaggerProperties {
 	private boolean enable = false;
 
 	private List<String> basePackages;
+	/**
+	 * 自定义header
+	 */
 	private Map<String, String> headers;
 
 	private ApiInfo apiInfo = new SwaggerApiInfo();
@@ -55,7 +57,6 @@ public class SwaggerProperties {
 					apiLicenseUrl,
 					new ArrayList<>());
 		}
-
 	}
 
 }

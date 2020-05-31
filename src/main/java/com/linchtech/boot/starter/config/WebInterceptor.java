@@ -1,5 +1,7 @@
 package com.linchtech.boot.starter.config;
 
+import com.alibaba.fastjson.JSON;
+import com.linchtech.boot.starter.common.AccessUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -23,6 +25,10 @@ public class WebInterceptor implements HandlerInterceptor {
     public static final String TRACK_PARAM = "track";
     public static final String PARAM_KEY_TRACK_ID = "track_id";
     public static final String PARAM_KEY_START = "start";
+
+
+    public static final ThreadLocal<AccessUser> USER_INFO = new ThreadLocal<>();
+    private static final String ACCESS_USER_INFO_HEADER = "access-user-info";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -61,6 +67,17 @@ public class WebInterceptor implements HandlerInterceptor {
             log.info("track_{} {}_{} {}", trackId, request.getMethod(), request.getRequestURI(),
                     startTimeMills);
         }
+        // 用户信息
+        AccessUser userInfo = AccessUser.builder().build();
+        AccessUser accessUserInfo = JSON.parseObject(request.getHeader(ACCESS_USER_INFO_HEADER),
+                AccessUser.class);
+        if (accessUserInfo != null) {
+            userInfo = AccessUser.builder()
+                    .userId(accessUserInfo.getUserId())
+                    .ip(accessUserInfo.getIp())
+                    .build();
+        }
+        USER_INFO.set(userInfo);
         return true;
     }
 

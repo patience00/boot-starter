@@ -18,18 +18,15 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 自定义response body的配置返回信息
- *
- * @author 107
- * @since jdk1.8
  */
 @Slf4j
 @Configuration
@@ -45,57 +42,6 @@ public class CustomResponseConfiguration implements ResponseBodyAdvice<Object>, 
     public CustomResponseConfiguration(ObjectMapper objectMapper, HttpProperties rewriteProperties) {
         this.objectMapper = objectMapper;
         this.rewriteProperties = rewriteProperties;
-    }
-
-    /**
-     * 跨域设置
-     *
-     * @param registry 注册器
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        rewriteProperties.getCorsMappings().forEach((corsMapping) -> {
-            if (StringUtils.isEmpty(corsMapping.getMappingPattern())) {
-                return;
-            }
-
-            if (CollectionUtils.isEmpty(corsMapping.getAllowedMethods())) {
-                corsMapping.setAllowedHeaders(Arrays.asList("GET", "POST", "HEAD"));
-            }
-
-            if (CollectionUtils.isEmpty(corsMapping.getAllowedOrigins())) {
-                corsMapping.setAllowedOrigins(Collections.singletonList("*"));
-            }
-
-            if (CollectionUtils.isEmpty(corsMapping.getAllowedHeaders())) {
-                corsMapping.setAllowedHeaders(Collections.singletonList("*"));
-            }
-            if (null != corsMapping.getAllowCredentials()) {
-                registry.addMapping(corsMapping.getMappingPattern())
-                        .allowedMethods(corsMapping.getAllowedMethods().toArray(new String[0]))
-                        .allowedOrigins(corsMapping.getAllowedOrigins().toArray(new String[0]))
-                        .allowedHeaders(corsMapping.getAllowedHeaders().toArray(new String[0]))
-                        .maxAge(corsMapping.getMaxAgeSeconds())
-                        .allowCredentials(corsMapping.getAllowCredentials());
-            } else {
-                registry.addMapping(corsMapping.getMappingPattern())
-                        .allowedMethods(corsMapping.getAllowedMethods().toArray(new String[0]))
-                        .allowedOrigins(corsMapping.getAllowedOrigins().toArray(new String[0]))
-                        .allowedHeaders(corsMapping.getAllowedHeaders().toArray(new String[0]))
-                        .maxAge(corsMapping.getMaxAgeSeconds());
-            }
-        });
-    }
-
-    /**
-     * response interceptor
-     */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new WebInterceptor())
-                .addPathPatterns("/**");
-        registry.addInterceptor(new HttpRestrictInterceptor(rewriteProperties, objectMapper))
-                .addPathPatterns("/**");
     }
 
     @Override
