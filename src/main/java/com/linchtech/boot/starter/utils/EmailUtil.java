@@ -20,10 +20,9 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @author: 107
- * @date: 2019/6/27 9:30
- * @description: 邮件发送工具
- * @Review:
+ * 邮件发送工具
+ * @author 107
+ * @date 2019/6/27 9:30
  */
 @Component
 @Slf4j

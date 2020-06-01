@@ -81,6 +81,14 @@ public class ResultVO<T> implements Serializable {
 				.build();
 	}
 
+	public static <T> ResultVO<T> fail(HttpResult httpResult,
+									   String message) {
+		return ResultVO.<T>builder()
+				.code(httpResult.getCode())
+				.message(message)
+				.build();
+	}
+
 	public static <T> ResultVO<T> fail(String message) {
 		return ResultVO.<T>builder()
 				.code(HttpResult.FAIL.getCode())

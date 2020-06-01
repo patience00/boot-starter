@@ -23,7 +23,7 @@ public class RedisHelper {
      * @param key    锁的key
      * @param expire 过期时间 ms,默认一个锁最长持有1s
      * @param waitInterval 每次自旋等待时长 ms ,默认一个锁最长持有1s
-     * @return 持有锁返回true
+     * @return boolean 持有锁返回true
      */
     public boolean lock(String key,
                         Long expire,

@@ -10,8 +10,7 @@ import java.util.Date;
 
 /**
  * @author 107
- * @create 2018-08-07 15:17
- * @desc
+ * @date 2018-08-07 15:17
  **/
 public class DateStringSerializer extends JsonSerializer<Integer> {
     @Override

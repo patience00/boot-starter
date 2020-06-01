@@ -6,8 +6,8 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
 /**
- * @author: 107
- * @date: 2019/3/12 10:08
+ * @author 107
+ * @date 2019/3/12 10:08
  */
 public class DateTimeValidator implements ConstraintValidator<DateTime,String> {
 

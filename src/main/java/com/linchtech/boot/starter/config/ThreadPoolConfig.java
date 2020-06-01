@@ -20,8 +20,7 @@ public class ThreadPoolConfig {
 
     /**
      * 线程池
-     *
-     * @return
+     * @return ExecutorService
      */
     @Bean(value = "threadPool")
     public ExecutorService buildConsumerQueueThreadPool() {
@@ -33,7 +32,7 @@ public class ThreadPoolConfig {
 
     /**
      * 用于spring中的{@link org.springframework.scheduling.annotation.Scheduled} 多个任务之间异步执行
-     * @return
+     * @return ScheduledExecutorService
      */
     @Bean(value = "scheduleThreadPool")
     public ScheduledExecutorService scheduledExecutorService() {

@@ -11,8 +11,8 @@ import java.util.Random;
 /**
  * 密码加密
  *
- * @author: 107
- * @date: 2019-03-19 17:30
+ * @author 107
+ * @date 2019-03-19 17:30
  */
 public class EncryptUtil {
     private static final int HASH_ITERATIONS = 1000;
@@ -61,7 +61,7 @@ public class EncryptUtil {
      * 验证密码是否正确
      * @param password
      * @param hashedPassword
-     * @return
+     * @return boolean
      */
     public static boolean isValidPassword(String password, String hashedPassword) {
         String[] saltAndPass = hashedPassword.split("\\$");

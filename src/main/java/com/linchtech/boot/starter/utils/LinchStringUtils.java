@@ -93,7 +93,7 @@ public class LinchStringUtils {
      * 驼峰格式字符串转换为下划线格式字符串
      *
      * @param param
-     * @return
+     * @return String
      */
     public static String camelToUnderline(String param) {
         if (param == null || "".equals(param.trim())) {
@@ -117,7 +117,7 @@ public class LinchStringUtils {
      * 将字母大写转小写,小写转大写
      *
      * @param title
-     * @return
+     * @return String
      */
     public static String changeUpAndLow(String title) {
         byte[] encode = Base64.getEncoder().encode(title.getBytes());
