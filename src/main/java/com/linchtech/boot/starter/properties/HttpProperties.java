@@ -28,10 +28,6 @@ public class HttpProperties {
      */
     private Map<String, Restrict> restricts = new HashMap<>();
 
-    /**
-     * when the system occur unknown Exception, need send to
-     */
-    private List<String> emailAddr = new ArrayList<>();
 
     @Data
     public static class Rewrite {

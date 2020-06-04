@@ -2,8 +2,9 @@ package com.linchtech.boot.starter.config;
 
 import com.linchtech.boot.starter.common.HttpResult;
 import com.linchtech.boot.starter.common.ResultVO;
+import com.linchtech.boot.starter.common.exceptions.BusinessException;
 import com.linchtech.boot.starter.common.exceptions.ParameterException;
-import com.linchtech.boot.starter.properties.HttpProperties;
+import com.linchtech.boot.starter.properties.SystemProperties;
 import com.linchtech.boot.starter.utils.EmailUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class ExceptionAdvice {
     @Autowired
     private EmailUtil emailUtil;
     @Autowired
-    private HttpProperties httpProperties;
+    private SystemProperties systemProperties;
 
     /**
      * 参数异常拦截.
@@ -116,7 +117,7 @@ public class ExceptionAdvice {
     }
 
     /**
-     * 错误异常拦截.
+     * 参数异常拦截.
      *
      * @return
      */
@@ -127,9 +128,22 @@ public class ExceptionAdvice {
         PrintWriter pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
         log.error(sw.toString());
-        emailUtil.sendBySpringMail(httpProperties.getEmailAddr(), "不合法的参数",
-                exception.getMessage() + "\n" + sw.toString(), null);
         return ResultVO.fail(HttpResult.PARAMETER_ERROR, exception.getMessage());
+    }
+
+    /**
+     * 业务异常拦截.
+     *
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(BusinessException.class)
+    public ResultVO exception(BusinessException exception) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        log.error(sw.toString());
+        return ResultVO.fail(HttpResult.BUSINESS_ERROR, exception.getMessage());
     }
 
     /**
@@ -144,7 +158,7 @@ public class ExceptionAdvice {
         PrintWriter pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
         log.error(sw.toString());
-        emailUtil.sendBySpringMail(httpProperties.getEmailAddr(), "未知错误",
+        emailUtil.sendBySpringMail(systemProperties.getEmailAddr(), "未知错误",
                 exception.getMessage() + "\n" + sw.toString(), null);
         return ResultVO.fail(HttpResult.SYSTEM_ERROR);
     }

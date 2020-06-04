@@ -1,7 +1,10 @@
 package com.linchtech.boot.starter.config;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.linchtech.boot.starter.properties.SystemProperties;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +16,14 @@ import java.util.concurrent.*;
  * @date 2019/8/7 14:19
  */
 @Configuration
+@EnableConfigurationProperties(SystemProperties.class)
 public class ThreadPoolConfig {
+
+    private SystemProperties systemProperties;
+
+    public ThreadPoolConfig(SystemProperties systemProperties) {
+        this.systemProperties = systemProperties;
+    }
 
     @Value("${spring.application.name}")
     private String appName;
@@ -23,11 +33,15 @@ public class ThreadPoolConfig {
      * @return ExecutorService
      */
     @Bean(value = "threadPool")
+    @ConditionalOnMissingBean(ExecutorService.class)
     public ExecutorService buildConsumerQueueThreadPool() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
                 .setNameFormat(appName + "-thread-pool-%d").build();
-        return new ThreadPoolExecutor(50, 100, 0L, TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<>(2000), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        return new ThreadPoolExecutor(systemProperties.getCorePoolSize(), systemProperties.getMaximumPoolSize(),
+                systemProperties.getKeepAliveTime(),
+                TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(systemProperties.getBlockingQueueSize()), namedThreadFactory,
+                new ThreadPoolExecutor.AbortPolicy());
     }
 
     /**

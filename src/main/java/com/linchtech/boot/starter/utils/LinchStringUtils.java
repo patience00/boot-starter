@@ -8,11 +8,12 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LinchStringUtils {
+public final class LinchStringUtils {
     private static final String UNDERLINE = "_";
 
     /**
      * 默认将inputStream转换为utf-8 字符串
+     *
      * @param in
      * @return utf-8 字符串
      * @throws UnsupportedEncodingException
@@ -23,6 +24,7 @@ public class LinchStringUtils {
 
     /**
      * 将inputStream转换为字符串
+     *
      * @param in
      * @param charset 编码格式
      * @return 字符串

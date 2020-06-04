@@ -14,7 +14,7 @@ import java.util.Random;
  * @author 107
  * @date 2019-03-19 17:30
  */
-public class EncryptUtil {
+public final class EncryptUtil {
     private static final int HASH_ITERATIONS = 1000;
     private static final String EMPTY_STRING = "";
     private static final int HASH_KEY_LENGTH = 192;
@@ -49,6 +49,7 @@ public class EncryptUtil {
 
     /**
      * 密码加密
+     *
      * @param password
      * @return
      */
@@ -59,6 +60,7 @@ public class EncryptUtil {
 
     /**
      * 验证密码是否正确
+     *
      * @param password
      * @param hashedPassword
      * @return boolean

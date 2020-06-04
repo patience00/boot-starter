@@ -1,10 +1,7 @@
 package com.linchtech.boot.starter.utils;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,29 +20,10 @@ public final class DateUtil {
     private static final ThreadLocal<SimpleDateFormat> YYYY_MM_DD_HH_THREAD_LOCAL =
             ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-    private static final long DAY_OF_MILL = 24 * 3600 * 1000;
-    public static final long MILLSECOND_HOURS = 60L * 60L * 1000L;
-
-    public static int getYear(final int date) {
-        return date / 10000;
-    }
-
-    public static int addYear(final int date, final int year) {
-        return date + year * 10000;
-    }
-
-    public static Timestamp timestampNow() {
-        return new Timestamp(System.currentTimeMillis());
-    }
+    public static final long DAY_OF_MILL = 24 * 3600 * 1000;
+    public static final long MILL_SECOND_HOURS = 60L * 60L * 1000L;
 
 
-    public static String now(String format) {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
-    }
-
-    public static int intTimeNow() {
-        return toTimeSeconds(new Date());
-    }
 
     /**
      * 获取指定日期从0点开始经过的秒数，范围在0--86400之间
@@ -80,7 +58,7 @@ public final class DateUtil {
      * @return
      */
     public static long getHoursAgoMillSecond(int hour) {
-        return System.currentTimeMillis() - MILLSECOND_HOURS * hour;
+        return System.currentTimeMillis() - MILL_SECOND_HOURS * hour;
     }
 
     /**

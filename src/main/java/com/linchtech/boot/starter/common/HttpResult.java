@@ -19,13 +19,12 @@ public enum HttpResult {
      */
     FAIL("请求失败", -1),
 
-
-
     /**
      * 不合法的参数返回描述及返回码.
      */
     PARAMETER_ERROR("不合法的参数", 1),
-    METHOD_ERROR("不支持的请求方式", 2),
+    BUSINESS_ERROR("业务异常", 2),
+    METHOD_ERROR("不支持的请求方式", 3),
 
     /**
      * 系统异常返回描述及返回码.

@@ -14,23 +14,24 @@ import java.util.List;
  * @author 107
  * @date 2020-05-10 21:35
  **/
-public class ExcelUtil {
+public final class ExcelUtil {
 
     /**
      * 填充报表值
-     * @param result 结果集
-     * @param wb 工作簿对象
-     * @param sheetAt 需要填充的sheet
-     * @param rowIndex 从多少行开始插入
+     *
+     * @param result      结果集
+     * @param wb          工作簿对象
+     * @param sheetAt     需要填充的sheet
+     * @param rowIndex    从多少行开始插入
      * @param columnIndex 从多少列插入
      * @param <T>
      * @throws IllegalAccessException
      */
-    public <T> void insertExcelValue(List<T> result,
-                                     XSSFWorkbook wb,
-                                     int sheetAt,
-                                     int rowIndex,
-                                     int columnIndex) throws IllegalAccessException {
+    public static <T> void insertExcelValue(List<T> result,
+                                            XSSFWorkbook wb,
+                                            int sheetAt,
+                                            int rowIndex,
+                                            int columnIndex) throws IllegalAccessException {
         XSSFSheet sheet = wb.getSheetAt(sheetAt);
         for (T t : result) {
             XSSFRow row = sheet.createRow(rowIndex++);
