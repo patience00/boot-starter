@@ -96,9 +96,10 @@ public class DingTalkMessage {
         stringBuilder.append(title);
         stringBuilder.append(" @");
         for (String at : atMobiles) {
-            stringBuilder.append(at + " ");
+            stringBuilder.append(at + "\n");
         }
         stringBuilder.append(content);
+
         // TODO
         markdown.setText("#### 杭州天气 @156xxxx8827\n" +
                 "> 9度，西北风1级，空气良89，相对温度73%\n\n" +
@@ -112,7 +113,6 @@ public class DingTalkMessage {
         }
     }
 
-
     public DingTalkClient client() {
         return new DefaultDingTalkClient("https://oapi.dingtalk" +
                 ".com/robot/send?access_token=" + dingTalkConfig.getToken() + "&sign=" + sign(System.currentTimeMillis()));
@@ -124,8 +124,7 @@ public class DingTalkMessage {
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(dingTalkConfig.getSecret().getBytes("UTF-8"), "HmacSHA256"));
             byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-            String sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
-            System.out.println(sign);
+            return URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
         } catch (Exception e) {
             log.error("dingding encode for sign error:{}", e.getMessage());
         }
