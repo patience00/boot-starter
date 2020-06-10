@@ -156,8 +156,8 @@
         <dependency>
             <groupId>dingding</groupId>
             <artifactId>dingding</artifactId>
+            <version>1.0.0</version>
             <scope>system</scope>
-            <optional>true</optional>
             <systemPath>${project.basedir}/lib/taobao-sdk-java-auto.jar</systemPath>
         </dependency>
     </dependencies>
@@ -217,6 +217,10 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <compilerArguments>
+                        <extdirs>${project.basedir}/lib/taobao-sdk-java-auto.jar</extdirs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -256,19 +260,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-        <!--打包本地jar-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                    <compilerArguments>
-                        <extdirs>${project.basedir}/lib/taobao-sdk-java-auto.jar</extdirs>
-                    </compilerArguments>
-                </configuration>
             </plugin>
         </plugins>
 

@@ -84,6 +84,7 @@ public class WebInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         modifyResponseTrack(request, response);
+        USER_INFO.remove();
     }
 
     public static String modifyResponseTrack(HttpServletRequest request, HttpServletResponse response) {

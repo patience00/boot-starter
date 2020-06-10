@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -82,7 +83,10 @@ public class DingTalkMessage {
      * @param titleLevel
      * @param atMobiles
      */
-    public void sendMarkDown(String content, String title, Integer titleLevel, List<String> atMobiles) {
+    public void sendMarkDown(String content,
+                             String title,
+                             Integer titleLevel,
+                             List<String> atMobiles) {
         OapiRobotSendRequest request = new OapiRobotSendRequest();
         request.setMsgtype("markdown");
         // isAtAll类型如果不为Boolean，请升级至最新SDK
@@ -93,18 +97,17 @@ public class DingTalkMessage {
         for (int i = 0; i < titleLevel; i++) {
             stringBuilder.append("#");
         }
+        stringBuilder.append(" ");
         stringBuilder.append(title);
         stringBuilder.append(" @");
         for (String at : atMobiles) {
             stringBuilder.append(at + "\n");
         }
+        stringBuilder.append("> ");
         stringBuilder.append(content);
+        stringBuilder.append("\n");
 
         // TODO
-        markdown.setText("#### 杭州天气 @156xxxx8827\n" +
-                "> 9度，西北风1级，空气良89，相对温度73%\n\n" +
-                "> ![screenshot](https://gw.alicdn.com/tfs/TB1ut3xxbsrBKNjSZFpXXcXhFXa-846-786.png)\n" +
-                "> ###### 10点20分发布 [天气](http://www.thinkpage.cn/) \n");
         request.setMarkdown(markdown);
         try {
             OapiRobotSendResponse response = client().execute(request);
@@ -113,9 +116,27 @@ public class DingTalkMessage {
         }
     }
 
-    public DingTalkClient client() {
+    public void sendErrorMsg(Exception e, String userId, String requestUri) {
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(e.toString() + "\n");
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            String trace = stackTraceElement.toString();
+            if (trace.contains("com.linchtech")) {
+                stringBuilder.append("**");
+                stringBuilder.append(stackTraceElement.toString());
+                stringBuilder.append("**");
+            }
+            stringBuilder.append("\n");
+        }
+        sendMarkDown(stringBuilder.toString(), "error", 3, Arrays.asList("13890083528"));
+    }
+
+    private DingTalkClient client() {
+        long timeMillis = System.currentTimeMillis();
         return new DefaultDingTalkClient("https://oapi.dingtalk" +
-                ".com/robot/send?access_token=" + dingTalkConfig.getToken() + "&sign=" + sign(System.currentTimeMillis()));
+                ".com/robot/send?access_token=" + dingTalkConfig.getToken() + "&timestamp=" + timeMillis + "&sign" +
+                "=" + sign(timeMillis));
     }
 
     private String sign(Long timestamp) {
