@@ -35,4 +35,29 @@ public class SystemProperties {
      * 任务队列大小
      */
     private Integer blockingQueueSize;
+
+    private DingTalkConfig dingTalk;
+
+    @Data
+    public static class DingTalkConfig {
+
+        /**
+         * 秘钥
+         */
+        private String secret;
+        /**
+         * 群聊发送的token
+         */
+        private String token;
+        /**
+         * 需要at的手机号
+         */
+        private List<String> atMobiles;
+
+        /**
+         * 异常信息加粗的包路径
+         */
+        private String boldPackage;
+
+    }
 }

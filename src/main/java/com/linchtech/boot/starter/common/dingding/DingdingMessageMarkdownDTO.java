@@ -1,6 +1,11 @@
 package com.linchtech.boot.starter.common.dingding;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * 标题
@@ -39,7 +44,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DingdingMessageMarkdownDTO {
+public class DingdingMessageMarkdownDTO implements Serializable {
 
     private String msgtype;
     private MessageAtDTO at;
@@ -49,7 +54,7 @@ public class DingdingMessageMarkdownDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class MessageMarkdownDTO {
+    public static class MessageMarkdownDTO implements Serializable {
         private String title;
         /**
          * 消息内容,可以包括文字图片,格式加粗等等,比如:

@@ -4,8 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.linchtech.boot.starter.common.dingding.DingdingMessageMarkdownDTO;
 import com.linchtech.boot.starter.common.dingding.DingdingMessageTextDTO;
 import com.linchtech.boot.starter.common.dingding.MessageAtDTO;
-import com.linchtech.boot.starter.config.DingTalkConfig;
-import lombok.Data;
+import com.linchtech.boot.starter.properties.SystemProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
@@ -15,6 +14,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -28,16 +28,16 @@ import java.net.URLEncoder;
  * @date 2020-06-10 10:38
  * @since 1.0.0
  **/
-@Data
 @Slf4j
 @Component
-@EnableConfigurationProperties(DingTalkConfig.class)
+@EnableConfigurationProperties(SystemProperties.class)
 public class DingTalkMessage {
 
-    private DingTalkConfig dingTalkConfig;
+    private SystemProperties systemProperties;
 
-    public DingTalkMessage(DingTalkConfig dingTalkConfig) {
-        this.dingTalkConfig = dingTalkConfig;
+    @Autowired
+    public DingTalkMessage(SystemProperties systemProperties) {
+        this.systemProperties = systemProperties;
     }
 
     public void sendText(String content) {
@@ -47,10 +47,10 @@ public class DingTalkMessage {
                 .msgtype("text")
                 .text(textDTO)
                 .build();
-        if (CollectionUtils.isEmpty(dingTalkConfig.getAtMobiles())) {
+        if (CollectionUtils.isEmpty(systemProperties.getDingTalk().getAtMobiles())) {
             messageTextDTO.setAt(MessageAtDTO.builder().isAtAll(true).build());
         } else {
-            messageTextDTO.setAt(MessageAtDTO.builder().atMobiles(dingTalkConfig.getAtMobiles()).build());
+            messageTextDTO.setAt(MessageAtDTO.builder().atMobiles(systemProperties.getDingTalk().getAtMobiles()).build());
         }
         send(messageTextDTO);
     }
@@ -76,9 +76,10 @@ public class DingTalkMessage {
         }
         textBuilder.append(" ");
         textBuilder.append(title);
-        textBuilder.append(" @");
-        if (!CollectionUtils.isEmpty(dingTalkConfig.getAtMobiles())) {
-            for (String at : dingTalkConfig.getAtMobiles()) {
+        textBuilder.append("\n");
+        if (!CollectionUtils.isEmpty(systemProperties.getDingTalk().getAtMobiles())) {
+            for (String at : systemProperties.getDingTalk().getAtMobiles()) {
+                textBuilder.append(" @");
                 textBuilder.append(at + "\n");
             }
         }
@@ -95,10 +96,18 @@ public class DingTalkMessage {
                 .markdown(markdownDTO)
                 .msgtype("markdown")
                 .build();
-        if (CollectionUtils.isEmpty(dingTalkConfig.getAtMobiles())) {
-            messageMarkdownDTO.setAt(MessageAtDTO.builder().isAtAll(true).build());
+        if (CollectionUtils.isEmpty(systemProperties.getDingTalk().getAtMobiles())) {
+            MessageAtDTO atDTO = MessageAtDTO.builder()
+                    .isAtAll(true)
+                    .atMobiles(systemProperties.getDingTalk().getAtMobiles())
+                    .build();
+            messageMarkdownDTO.setAt(atDTO);
         } else {
-            messageMarkdownDTO.setAt(MessageAtDTO.builder().atMobiles(dingTalkConfig.getAtMobiles()).build());
+            MessageAtDTO atDTO = MessageAtDTO.builder()
+                    .isAtAll(false)
+                    .atMobiles(systemProperties.getDingTalk().getAtMobiles())
+                    .build();
+            messageMarkdownDTO.setAt(atDTO);
         }
         send(messageMarkdownDTO);
     }
@@ -112,26 +121,32 @@ public class DingTalkMessage {
         stringBuilder.append("requestUri:");
         stringBuilder.append(requestUri);
         stringBuilder.append("\n");
-        stringBuilder.append(e.toString() + "\n");
-        for (StackTraceElement stackTraceElement : stackTrace) {
+        stringBuilder.append(e.toString());
+        stringBuilder.append("\n");
+        for (int i = 0; i < stackTrace.length; i++) {
+            StackTraceElement stackTraceElement = stackTrace[i];
             String trace = stackTraceElement.toString();
-            if (trace.contains(dingTalkConfig.getBoldPackage())) {
+            if (trace.contains(systemProperties.getDingTalk().getBoldPackage())) {
                 stringBuilder.append("**");
                 stringBuilder.append(stackTraceElement.toString());
                 stringBuilder.append("**");
             }
+            stringBuilder.append(stackTraceElement.toString());
             stringBuilder.append("\n");
+            if (i > 10) {
+                break;
+            }
         }
-        sendMarkDown(stringBuilder.toString(), "error", 3);
+        sendMarkDown(stringBuilder.toString(), "生产异常", 2);
     }
 
     public void send(Object params) {
-        String result = "";
+        String result ;
         long timeMillis = System.currentTimeMillis();
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost("https://oapi.dingtalk" +
-                    ".com/robot/send?access_token=" + dingTalkConfig.getToken() + "&timestamp=" + timeMillis + "&sign" +
+                    ".com/robot/send?access_token=" + systemProperties.getDingTalk().getToken() + "&timestamp=" + timeMillis + "&sign" +
                     "=" + sign(timeMillis));
 
             String requestParam = JSON.toJSONString(params);
@@ -152,9 +167,9 @@ public class DingTalkMessage {
 
     private String sign(Long timestamp) {
         try {
-            String stringToSign = timestamp + "\n" + dingTalkConfig.getSecret();
+            String stringToSign = timestamp + "\n" + systemProperties.getDingTalk().getSecret();
             Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(dingTalkConfig.getSecret().getBytes("UTF-8"), "HmacSHA256"));
+            mac.init(new SecretKeySpec(systemProperties.getDingTalk().getSecret().getBytes("UTF-8"), "HmacSHA256"));
             byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
             return URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
         } catch (Exception e) {

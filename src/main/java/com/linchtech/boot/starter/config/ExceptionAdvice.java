@@ -159,7 +159,11 @@ public class ExceptionAdvice {
         exception.printStackTrace(pw);
         log.error(sw.toString());
         AccessUser accessUser = USER_INFO.get();
-        dingTalkMessage.sendErrorMsg(exception, accessUser.getUserId()+"",accessUser.getRequestUri());
+        String userId = accessUser == null ? "null" : accessUser.getUserId() == null ? "null" :
+                accessUser.getUserId().toString();
+        String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
+                accessUser.getRequestUri();
+        dingTalkMessage.sendErrorMsg(exception, userId, uri);
         return ResultVO.fail(HttpResult.SYSTEM_ERROR);
     }
 }
