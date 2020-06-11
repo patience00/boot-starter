@@ -1,8 +1,6 @@
 package com.linchtech.boot.starter.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.dingtalk.api.DefaultDingTalkClient;
-import com.dingtalk.api.DingTalkClient;
 import com.linchtech.boot.starter.common.dingding.DingdingMessageMarkdownDTO;
 import com.linchtech.boot.starter.common.dingding.DingdingMessageTextDTO;
 import com.linchtech.boot.starter.common.dingding.MessageAtDTO;
@@ -143,13 +141,6 @@ public class DingTalkMessage {
         } catch (Exception e) {
             log.error("--->{}", e.getMessage());
         }
-    }
-
-    private DingTalkClient client() {
-        long timeMillis = System.currentTimeMillis();
-        return new DefaultDingTalkClient("https://oapi.dingtalk" +
-                ".com/robot/send?access_token=" + dingTalkConfig.getToken() + "&timestamp=" + timeMillis + "&sign" +
-                "=" + sign(timeMillis));
     }
 
     private String sign(Long timestamp) {
