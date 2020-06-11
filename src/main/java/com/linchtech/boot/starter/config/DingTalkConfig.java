@@ -1,7 +1,6 @@
 package com.linchtech.boot.starter.config;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,5 +28,10 @@ public class DingTalkConfig {
      * 需要at的手机号
      */
     private List<String> atMobiles;
+
+    /**
+     * 异常信息加粗的包路径
+     */
+    private String boldPackage;
 
 }

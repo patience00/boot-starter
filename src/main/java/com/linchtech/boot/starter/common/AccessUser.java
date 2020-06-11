@@ -19,4 +19,8 @@ public class AccessUser {
     private String location;
     private String ip;
 
+    private String requestUri;
+    private String method;
+    private String param;
+
 }

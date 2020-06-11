@@ -106,10 +106,16 @@ public class DingTalkMessage {
     public void sendErrorMsg(Exception e, String userId, String requestUri) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("userId:");
+        stringBuilder.append(userId);
+        stringBuilder.append("\n");
+        stringBuilder.append("requestUri:");
+        stringBuilder.append(requestUri);
+        stringBuilder.append("\n");
         stringBuilder.append(e.toString() + "\n");
         for (StackTraceElement stackTraceElement : stackTrace) {
             String trace = stackTraceElement.toString();
-            if (trace.contains("com.linchtech")) {
+            if (trace.contains(dingTalkConfig.getBoldPackage())) {
                 stringBuilder.append("**");
                 stringBuilder.append(stackTraceElement.toString());
                 stringBuilder.append("**");
@@ -137,6 +143,7 @@ public class DingTalkMessage {
             if (response.getStatusLine().getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
                 result = EntityUtils.toString(entity, "utf-8");
+                log.info("send dingding mgs result:{}", result);
             }
         } catch (Exception e) {
             log.error("--->{}", e.getMessage());

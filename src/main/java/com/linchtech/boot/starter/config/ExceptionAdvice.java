@@ -1,11 +1,11 @@
 package com.linchtech.boot.starter.config;
 
+import com.linchtech.boot.starter.common.AccessUser;
 import com.linchtech.boot.starter.common.HttpResult;
 import com.linchtech.boot.starter.common.ResultVO;
 import com.linchtech.boot.starter.common.exceptions.BusinessException;
 import com.linchtech.boot.starter.common.exceptions.ParameterException;
-import com.linchtech.boot.starter.properties.SystemProperties;
-import com.linchtech.boot.starter.utils.EmailUtil;
+import com.linchtech.boot.starter.utils.DingTalkMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +25,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.AccessDeniedException;
 
+import static com.linchtech.boot.starter.config.WebInterceptor.USER_INFO;
+
 /**
  * @author 107
  * @date 2018-05-21 15:13
@@ -34,9 +36,7 @@ import java.nio.file.AccessDeniedException;
 public class ExceptionAdvice {
 
     @Autowired
-    private EmailUtil emailUtil;
-    @Autowired
-    private SystemProperties systemProperties;
+    private DingTalkMessage dingTalkMessage;
 
     /**
      * 参数异常拦截.
@@ -158,8 +158,8 @@ public class ExceptionAdvice {
         PrintWriter pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
         log.error(sw.toString());
-        emailUtil.sendBySpringMail(systemProperties.getEmailAddr(), "未知错误",
-                exception.getMessage() + "\n" + sw.toString(), null);
+        AccessUser accessUser = USER_INFO.get();
+        dingTalkMessage.sendErrorMsg(exception, accessUser.getUserId().toString(),accessUser.getRequestUri());
         return ResultVO.fail(HttpResult.SYSTEM_ERROR);
     }
 }

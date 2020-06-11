@@ -75,7 +75,14 @@ public class WebInterceptor implements HandlerInterceptor {
             userInfo = AccessUser.builder()
                     .userId(accessUserInfo.getUserId())
                     .ip(accessUserInfo.getIp())
+                    .method(request.getMethod())
+                    .requestUri(request.getRequestURI())
                     .build();
+        }
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String key = parameterNames.nextElement();
+            String value = request.getParameter(key);
         }
         USER_INFO.set(userInfo);
         return true;
