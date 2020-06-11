@@ -1,14 +1,22 @@
 package com.linchtech.boot.starter.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
-import com.dingtalk.api.request.OapiRobotSendRequest;
-import com.dingtalk.api.response.OapiRobotSendResponse;
+import com.linchtech.boot.starter.common.dingding.DingdingMessageMarkdownDTO;
+import com.linchtech.boot.starter.common.dingding.DingdingMessageTextDTO;
+import com.linchtech.boot.starter.common.dingding.MessageAtDTO;
 import com.linchtech.boot.starter.config.DingTalkConfig;
-import com.taobao.api.ApiException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -16,8 +24,6 @@ import org.springframework.util.CollectionUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author 107
@@ -36,43 +42,23 @@ public class DingTalkMessage {
         this.dingTalkConfig = dingTalkConfig;
     }
 
-    public OapiRobotSendResponse sendText(String content) {
-        OapiRobotSendRequest request = new OapiRobotSendRequest();
-        request.setMsgtype("text");
-        OapiRobotSendRequest.Text text = new OapiRobotSendRequest.Text();
-        text.setContent(content);
-        request.setText(text);
-        OapiRobotSendRequest.At at = new OapiRobotSendRequest.At();
-        // isAtAll类型如果不为Boolean，请升级至最新SDK
+    public void sendText(String content) {
+        DingdingMessageTextDTO.MessageTextDTO textDTO = DingdingMessageTextDTO.MessageTextDTO.builder()
+                .content(content).build();
+        DingdingMessageTextDTO messageTextDTO = DingdingMessageTextDTO.builder()
+                .msgtype("text")
+                .text(textDTO)
+                .build();
         if (CollectionUtils.isEmpty(dingTalkConfig.getAtMobiles())) {
-            at.setIsAtAll(true);
+            messageTextDTO.setAt(MessageAtDTO.builder().isAtAll(true).build());
         } else {
-            at.setAtMobiles(dingTalkConfig.getAtMobiles());
+            messageTextDTO.setAt(MessageAtDTO.builder().atMobiles(dingTalkConfig.getAtMobiles()).build());
         }
-        request.setAt(at);
-        try {
-            return client().execute(request);
-        } catch (ApiException e) {
-            log.error("dingding send msg fail:{}", e.getErrMsg());
-            e.printStackTrace();
-        }
-        return null;
+        send(messageTextDTO);
     }
 
     public void sendLink(String content, String title, String picUrl, String messageUrl) {
-        OapiRobotSendRequest request = new OapiRobotSendRequest();
-        request.setMsgtype("link");
-        OapiRobotSendRequest.Link link = new OapiRobotSendRequest.Link();
-        link.setMessageUrl(messageUrl);
-        link.setPicUrl(picUrl);
-        link.setTitle(title);
-        link.setText(content);
-        request.setLink(link);
-        try {
-            OapiRobotSendResponse response = client().execute(request);
-        } catch (ApiException e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
@@ -81,39 +67,42 @@ public class DingTalkMessage {
      * @param content    内容
      * @param title
      * @param titleLevel
-     * @param atMobiles
      */
     public void sendMarkDown(String content,
                              String title,
-                             Integer titleLevel,
-                             List<String> atMobiles) {
-        OapiRobotSendRequest request = new OapiRobotSendRequest();
-        request.setMsgtype("markdown");
-        // isAtAll类型如果不为Boolean，请升级至最新SDK
-        OapiRobotSendRequest.Markdown markdown = new OapiRobotSendRequest.Markdown();
-        markdown.setTitle(title);
-        StringBuilder stringBuilder = new StringBuilder();
+                             Integer titleLevel) {
+        StringBuilder textBuilder = new StringBuilder();
         // 多少级标题,就有几个#
         for (int i = 0; i < titleLevel; i++) {
-            stringBuilder.append("#");
+            textBuilder.append("#");
         }
-        stringBuilder.append(" ");
-        stringBuilder.append(title);
-        stringBuilder.append(" @");
-        for (String at : atMobiles) {
-            stringBuilder.append(at + "\n");
+        textBuilder.append(" ");
+        textBuilder.append(title);
+        textBuilder.append(" @");
+        if (!CollectionUtils.isEmpty(dingTalkConfig.getAtMobiles())) {
+            for (String at : dingTalkConfig.getAtMobiles()) {
+                textBuilder.append(at + "\n");
+            }
         }
-        stringBuilder.append("> ");
-        stringBuilder.append(content);
-        stringBuilder.append("\n");
+        textBuilder.append("> ");
+        textBuilder.append(content);
+        textBuilder.append("\n");
 
-        // TODO
-        request.setMarkdown(markdown);
-        try {
-            OapiRobotSendResponse response = client().execute(request);
-        } catch (ApiException e) {
-            e.printStackTrace();
+        DingdingMessageMarkdownDTO.MessageMarkdownDTO markdownDTO =
+                DingdingMessageMarkdownDTO.MessageMarkdownDTO.builder()
+                        .title(title)
+                        .text(textBuilder.toString())
+                        .build();
+        DingdingMessageMarkdownDTO messageMarkdownDTO = DingdingMessageMarkdownDTO.builder()
+                .markdown(markdownDTO)
+                .msgtype("markdown")
+                .build();
+        if (CollectionUtils.isEmpty(dingTalkConfig.getAtMobiles())) {
+            messageMarkdownDTO.setAt(MessageAtDTO.builder().isAtAll(true).build());
+        } else {
+            messageMarkdownDTO.setAt(MessageAtDTO.builder().atMobiles(dingTalkConfig.getAtMobiles()).build());
         }
+        send(messageMarkdownDTO);
     }
 
     public void sendErrorMsg(Exception e, String userId, String requestUri) {
@@ -129,7 +118,31 @@ public class DingTalkMessage {
             }
             stringBuilder.append("\n");
         }
-        sendMarkDown(stringBuilder.toString(), "error", 3, Arrays.asList("13890083528"));
+        sendMarkDown(stringBuilder.toString(), "error", 3);
+    }
+
+    public void send(Object params) {
+        String result = "";
+        long timeMillis = System.currentTimeMillis();
+        try {
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost("https://oapi.dingtalk" +
+                    ".com/robot/send?access_token=" + dingTalkConfig.getToken() + "&timestamp=" + timeMillis + "&sign" +
+                    "=" + sign(timeMillis));
+
+            String requestParam = JSON.toJSONString(params);
+            StringEntity requestEntity = new StringEntity(requestParam, "utf-8");
+            httpPost.setEntity(requestEntity);
+            httpPost.setHeader("Content-type", "application/json");
+
+            CloseableHttpResponse response = httpClient.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response.getEntity();
+                result = EntityUtils.toString(entity, "utf-8");
+            }
+        } catch (Exception e) {
+            log.error("--->{}", e.getMessage());
+        }
     }
 
     private DingTalkClient client() {
