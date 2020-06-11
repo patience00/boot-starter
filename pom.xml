@@ -153,13 +153,13 @@
             <optional>true</optional>
         </dependency>
         <!--钉钉机器人SDK-->
-        <dependency>
-            <groupId>dingding</groupId>
-            <artifactId>dingding</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>dingding</groupId>-->
+<!--            <artifactId>dingding</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto.jar</systemPath>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
