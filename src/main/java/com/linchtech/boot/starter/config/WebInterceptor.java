@@ -74,7 +74,8 @@ public class WebInterceptor implements HandlerInterceptor {
         if (accessUserInfo != null) {
             userInfo = AccessUser.builder()
                     .userId(accessUserInfo.getUserId())
-                    .ip(accessUserInfo.getIp())
+                    .ip(accessUserInfo.getIp() == null ? "null" : accessUserInfo.getIp())
+                    .location(accessUserInfo.getLocation() == null ? "null" : accessUserInfo.getLocation())
                     .build();
         }
         userInfo.setMethod(request.getMethod());

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.linchtech</groupId>
     <artifactId>boot-starter</artifactId>
-    <version>0.0.6-RELEASE</version>
+    <version>0.0.8-RELEASE</version>
     <name>boot-starter</name>
     <packaging>jar</packaging>
     <description>Linchtech's Spring Boot Starter to help you develop with SpringBoot quickly</description>
@@ -262,16 +262,6 @@
                 </executions>
             </plugin>
         </plugins>
-
-        <resources>
-            <resource>
-                <directory>lib</directory>
-                <targetPath>/BOOT-INF/lib/</targetPath>
-                <includes>
-                    <include>**/*.jar</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
     <!--发布到maven仓库-->
 
