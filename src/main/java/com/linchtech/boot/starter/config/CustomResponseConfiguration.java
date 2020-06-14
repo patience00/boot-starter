@@ -18,6 +18,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
@@ -42,6 +43,11 @@ public class CustomResponseConfiguration implements ResponseBodyAdvice<Object>, 
     public CustomResponseConfiguration(ObjectMapper objectMapper, HttpProperties rewriteProperties) {
         this.objectMapper = objectMapper;
         this.rewriteProperties = rewriteProperties;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new WebInterceptor()).addPathPatterns("/**");
     }
 
     @Override

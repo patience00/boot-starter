@@ -80,6 +80,7 @@ public class WebInterceptor implements HandlerInterceptor {
         }
         userInfo.setMethod(request.getMethod());
         userInfo.setRequestUri(request.getRequestURI());
+        log.info("access user:{}", userInfo);
         USER_INFO.set(userInfo);
         return true;
     }
