@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * @author 107
@@ -38,78 +39,58 @@ public class DingTalkMessage {
         this.systemProperties = systemProperties;
     }
 
-    public void sendText(String content) {
+    /**
+     * 发送钉钉消息给管理员
+     * @param content
+     */
+    public void sendTextToAdmin(String content) {
+        sendText(content, systemProperties.getDingTalk().getAtMobiles());
+    }
+
+    /**
+     * 发送给指定人
+     * @param content
+     * @param at
+     */
+    public void sendTextAtMobiles(String content, List<String> at) {
+        sendText(content, at);
+    }
+
+    /**
+     * 通用发送钉钉文字
+     * @param content
+     * @param at
+     */
+    public void sendText(String content, List<String> at) {
         DingdingMessageTextDTO.MessageTextDTO textDTO = DingdingMessageTextDTO.MessageTextDTO.builder()
                 .content(content).build();
         DingdingMessageTextDTO messageTextDTO = DingdingMessageTextDTO.builder()
                 .msgtype("text")
                 .text(textDTO)
                 .build();
-        if (CollectionUtils.isEmpty(systemProperties.getDingTalk().getAtMobiles())) {
+        if (CollectionUtils.isEmpty(at)) {
             messageTextDTO.setAt(MessageAtDTO.builder().isAtAll(true).build());
         } else {
-            messageTextDTO.setAt(MessageAtDTO.builder().atMobiles(systemProperties.getDingTalk().getAtMobiles()).build());
+            messageTextDTO.setAt(MessageAtDTO.builder().atMobiles(at).build());
         }
         send(messageTextDTO);
     }
 
-    public void sendLink(String content, String title, String picUrl, String messageUrl) {
 
+    public void sendMarkDownToAdmin(String content, String title, Integer titleLevel) {
+        sendMarkDown(content, title, titleLevel, systemProperties.getDingTalk().getAtMobiles());
+    }
+
+    public void sendMarkDownToMobiles(String content, String title, Integer titleLevel,List<String> atMobiles) {
+        sendMarkDown(content, title, titleLevel, atMobiles);
     }
 
     /**
-     * 发送markDown消息
-     *
-     * @param content    内容
-     * @param title
-     * @param titleLevel
+     * 发送生产环境异常消息
+     * @param e
+     * @param userId
+     * @param requestUri
      */
-    public void sendMarkDown(String content,
-                             String title,
-                             Integer titleLevel) {
-        StringBuilder textBuilder = new StringBuilder();
-        // 多少级标题,就有几个#
-        for (int i = 0; i < titleLevel; i++) {
-            textBuilder.append("#");
-        }
-        textBuilder.append(" ");
-        textBuilder.append(title);
-        textBuilder.append("\n");
-        if (!CollectionUtils.isEmpty(systemProperties.getDingTalk().getAtMobiles())) {
-            for (String at : systemProperties.getDingTalk().getAtMobiles()) {
-                textBuilder.append(" @");
-                textBuilder.append(at + "\n");
-            }
-        }
-        textBuilder.append("> ");
-        textBuilder.append(content);
-        textBuilder.append("\n");
-
-        DingdingMessageMarkdownDTO.MessageMarkdownDTO markdownDTO =
-                DingdingMessageMarkdownDTO.MessageMarkdownDTO.builder()
-                        .title(title)
-                        .text(textBuilder.toString())
-                        .build();
-        DingdingMessageMarkdownDTO messageMarkdownDTO = DingdingMessageMarkdownDTO.builder()
-                .markdown(markdownDTO)
-                .msgtype("markdown")
-                .build();
-        if (CollectionUtils.isEmpty(systemProperties.getDingTalk().getAtMobiles())) {
-            MessageAtDTO atDTO = MessageAtDTO.builder()
-                    .isAtAll(true)
-                    .atMobiles(systemProperties.getDingTalk().getAtMobiles())
-                    .build();
-            messageMarkdownDTO.setAt(atDTO);
-        } else {
-            MessageAtDTO atDTO = MessageAtDTO.builder()
-                    .isAtAll(false)
-                    .atMobiles(systemProperties.getDingTalk().getAtMobiles())
-                    .build();
-            messageMarkdownDTO.setAt(atDTO);
-        }
-        send(messageMarkdownDTO);
-    }
-
     public void sendErrorMsg(Exception e, String userId, String requestUri) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         StringBuilder stringBuilder = new StringBuilder();
@@ -135,11 +116,75 @@ public class DingTalkMessage {
                 break;
             }
         }
-        sendMarkDown(stringBuilder.toString(), "生产异常", 2);
+        sendMarkDown(stringBuilder.toString(), "生产异常", 2,systemProperties.getDingTalk().getAtMobiles());
     }
 
+    public void sendLink(String content, String title, String picUrl, String messageUrl) {
+
+    }
+
+    /**
+     * 发送markDown消息
+     *
+     * @param content    内容
+     * @param title
+     * @param titleLevel
+     */
+    public void sendMarkDown(String content,
+                             String title,
+                             Integer titleLevel,
+                             List<String> atMobiles) {
+        StringBuilder textBuilder = new StringBuilder();
+        // 多少级标题,就有几个#
+        for (int i = 0; i < titleLevel; i++) {
+            textBuilder.append("#");
+        }
+        textBuilder.append(" ");
+        textBuilder.append(title);
+        textBuilder.append("\n");
+        if (!CollectionUtils.isEmpty(atMobiles)) {
+            for (String at : atMobiles) {
+                textBuilder.append(" @");
+                textBuilder.append(at + "\n");
+            }
+        }
+        textBuilder.append("> ");
+        textBuilder.append(content);
+        textBuilder.append("\n");
+
+        DingdingMessageMarkdownDTO.MessageMarkdownDTO markdownDTO =
+                DingdingMessageMarkdownDTO.MessageMarkdownDTO.builder()
+                        .title(title)
+                        .text(textBuilder.toString())
+                        .build();
+        DingdingMessageMarkdownDTO messageMarkdownDTO = DingdingMessageMarkdownDTO.builder()
+                .markdown(markdownDTO)
+                .msgtype("markdown")
+                .build();
+        if (CollectionUtils.isEmpty(atMobiles)) {
+            MessageAtDTO atDTO = MessageAtDTO.builder()
+                    .isAtAll(true)
+                    .atMobiles(atMobiles)
+                    .build();
+            messageMarkdownDTO.setAt(atDTO);
+        } else {
+            MessageAtDTO atDTO = MessageAtDTO.builder()
+                    .isAtAll(false)
+                    .atMobiles(atMobiles)
+                    .build();
+            messageMarkdownDTO.setAt(atDTO);
+        }
+        send(messageMarkdownDTO);
+    }
+
+
+
+    /**
+     * httpclient发送钉钉消息
+     * @param params
+     */
     public void send(Object params) {
-        String result ;
+        String result;
         long timeMillis = System.currentTimeMillis();
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -163,6 +208,11 @@ public class DingTalkMessage {
         }
     }
 
+    /**
+     * 钉钉发送的api签名
+     * @param timestamp
+     * @return
+     */
     private String sign(Long timestamp) {
         try {
             String stringToSign = timestamp + "\n" + systemProperties.getDingTalk().getSecret();
