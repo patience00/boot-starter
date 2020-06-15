@@ -8,6 +8,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +69,15 @@ public class WebInterceptor implements HandlerInterceptor {
             log.info("track_{} {}_{} {}", trackId, request.getMethod(), request.getRequestURI(),
                     startTimeMills);
         }
-        // 用户信息
+        // 从网关转发的header中获取用户信息
         AccessUser userInfo = AccessUser.builder().build();
-        AccessUser accessUserInfo = JSON.parseObject(request.getHeader(ACCESS_USER_INFO_HEADER),
+        String header = null;
+        try {
+            header = URLDecoder.decode(request.getHeader(ACCESS_USER_INFO_HEADER), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        AccessUser accessUserInfo = JSON.parseObject(header,
                 AccessUser.class);
         if (accessUserInfo != null) {
             userInfo = AccessUser.builder()
@@ -86,7 +94,10 @@ public class WebInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(HttpServletRequest request,
+                                HttpServletResponse response,
+                                Object handler,
+                                Exception ex) {
         modifyResponseTrack(request, response);
         USER_INFO.remove();
     }
