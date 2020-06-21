@@ -69,27 +69,31 @@ public class WebInterceptor implements HandlerInterceptor {
             log.info("track_{} {}_{} {}", trackId, request.getMethod(), request.getRequestURI(),
                     startTimeMills);
         }
-        // 从网关转发的header中获取用户信息
-        AccessUser userInfo = AccessUser.builder().build();
-        String header = null;
-        try {
-            header = URLDecoder.decode(request.getHeader(ACCESS_USER_INFO_HEADER), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        // 从网关转发的header中获取用户信息,swagger放行
+        if (!request.getRequestURI().contains("swagger")) {
+            AccessUser userInfo = AccessUser.builder().build();
+            String header = null;
+            if (request.getHeader(ACCESS_USER_INFO_HEADER) != null) {
+                try {
+                    header = URLDecoder.decode(request.getHeader(ACCESS_USER_INFO_HEADER), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            AccessUser accessUserInfo = JSON.parseObject(header,
+                    AccessUser.class);
+            if (accessUserInfo != null) {
+                userInfo = AccessUser.builder()
+                        .userId(accessUserInfo.getUserId())
+                        .ip(accessUserInfo.getIp() == null ? "null" : accessUserInfo.getIp())
+                        .location(accessUserInfo.getLocation() == null ? "null" : accessUserInfo.getLocation())
+                        .build();
+            }
+            userInfo.setMethod(request.getMethod());
+            userInfo.setRequestUri(request.getRequestURI());
+            log.info("access user:{}", userInfo);
+            USER_INFO.set(userInfo);
         }
-        AccessUser accessUserInfo = JSON.parseObject(header,
-                AccessUser.class);
-        if (accessUserInfo != null) {
-            userInfo = AccessUser.builder()
-                    .userId(accessUserInfo.getUserId())
-                    .ip(accessUserInfo.getIp() == null ? "null" : accessUserInfo.getIp())
-                    .location(accessUserInfo.getLocation() == null ? "null" : accessUserInfo.getLocation())
-                    .build();
-        }
-        userInfo.setMethod(request.getMethod());
-        userInfo.setRequestUri(request.getRequestURI());
-        log.info("access user:{}", userInfo);
-        USER_INFO.set(userInfo);
         return true;
     }
 

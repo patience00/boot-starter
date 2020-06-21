@@ -41,6 +41,7 @@ public class DingTalkMessage {
 
     /**
      * 发送钉钉消息给管理员
+     *
      * @param content
      */
     public void sendTextToAdmin(String content) {
@@ -49,6 +50,7 @@ public class DingTalkMessage {
 
     /**
      * 发送给指定人
+     *
      * @param content
      * @param at
      */
@@ -58,6 +60,7 @@ public class DingTalkMessage {
 
     /**
      * 通用发送钉钉文字
+     *
      * @param content
      * @param at
      */
@@ -81,12 +84,13 @@ public class DingTalkMessage {
         sendMarkDown(content, title, titleLevel, systemProperties.getDingTalk().getAtMobiles());
     }
 
-    public void sendMarkDownToMobiles(String content, String title, Integer titleLevel,List<String> atMobiles) {
+    public void sendMarkDownToMobiles(String content, String title, Integer titleLevel, List<String> atMobiles) {
         sendMarkDown(content, title, titleLevel, atMobiles);
     }
 
     /**
      * 发送生产环境异常消息
+     *
      * @param e
      * @param userId
      * @param requestUri
@@ -116,7 +120,7 @@ public class DingTalkMessage {
                 break;
             }
         }
-        sendMarkDown(stringBuilder.toString(), "生产异常", 2,systemProperties.getDingTalk().getAtMobiles());
+        sendMarkDown(stringBuilder.toString(), "生产异常", 2, systemProperties.getDingTalk().getAtMobiles());
     }
 
     public void sendLink(String content, String title, String picUrl, String messageUrl) {
@@ -178,9 +182,9 @@ public class DingTalkMessage {
     }
 
 
-
     /**
      * httpclient发送钉钉消息
+     *
      * @param params
      */
     public void send(Object params) {
@@ -210,6 +214,7 @@ public class DingTalkMessage {
 
     /**
      * 钉钉发送的api签名
+     *
      * @param timestamp
      * @return
      */
