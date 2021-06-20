@@ -19,7 +19,7 @@ import java.util.concurrent.*;
 @EnableConfigurationProperties(SystemProperties.class)
 public class ThreadPoolConfig {
 
-    private SystemProperties systemProperties;
+    private final SystemProperties systemProperties;
 
     public ThreadPoolConfig(SystemProperties systemProperties) {
         this.systemProperties = systemProperties;
@@ -41,7 +41,7 @@ public class ThreadPoolConfig {
                 systemProperties.getKeepAliveTime(),
                 TimeUnit.MILLISECONDS,
                 new ArrayBlockingQueue<>(systemProperties.getBlockingQueueSize()), namedThreadFactory,
-                new ThreadPoolExecutor.AbortPolicy());
+                new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     /**
@@ -52,7 +52,7 @@ public class ThreadPoolConfig {
     public ScheduledExecutorService scheduledExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
                 .setNameFormat(appName + "-schedule-thread-pool-%d").build();
-        return new ScheduledThreadPoolExecutor(10, namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        return new ScheduledThreadPoolExecutor(10, namedThreadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
 }

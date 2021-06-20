@@ -24,5 +24,6 @@ public class AccessUser implements Serializable {
     private String requestUri;
     private String method;
     private String param;
+    private Long expireAt;
 
 }

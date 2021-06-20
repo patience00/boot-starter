@@ -2,6 +2,7 @@ package com.linchtech.boot.starter.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +10,9 @@ import org.springframework.stereotype.Component;
  * @author 107
  * @date 2020-05-10 21:02
  **/
-@Component
 @Slf4j
+@Component
+@ConditionalOnClass({RedisTemplate.class})
 public class RedisHelper {
 
     @Autowired
@@ -81,6 +83,7 @@ public class RedisHelper {
 
     /**
      * 屏蔽redis中的数据类型,转换为long
+     *
      * @param currentObject
      * @return
      */

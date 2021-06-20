@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -12,8 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.mail.*;
-import javax.mail.internet.*;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -24,8 +34,9 @@ import java.util.Properties;
  * @author 107
  * @date 2019/6/27 9:30
  */
-@Component
 @Slf4j
+@Component
+@ConditionalOnProperty(prefix = "spring.mail", name = "enable")
 public class EmailUtil {
 
     @Value("${spring.mail.password}")
@@ -55,7 +66,7 @@ public class EmailUtil {
     public void send(List<String> sendTo,
                      String subject,
                      String content,
-                     File file) throws MessagingException, IOException {
+                     File file) throws Exception {
         // 第一步：创建Session，包含邮件服务器网络连接信息
         Properties props = new Properties();
         // 指定邮件的传输协议，smtp;同时通过验证
