@@ -103,17 +103,17 @@ public class ExceptionAdvice {
      */
     @ResponseBody
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResultVO methodArgumentNotValidException(DataIntegrityViolationException exception) {
-        log.error(exception.toString());
+    public ResultVO methodArgumentNotValidException(DataIntegrityViolationException dataIntegrityViolationException) {
+        log.error("dataIntegrityViolationException:", dataIntegrityViolationException);
         return ResultVO.fail(HttpResult.PARAMETER_ERROR);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(AccessDeniedException.class)
-    public ResultVO accessDeniedException(AccessDeniedException e) {
-        log.error(e.getMessage());
-        return ResultVO.fail(e.getMessage());
+    public ResultVO accessDeniedException(AccessDeniedException accessDeniedException) {
+        log.error("accessDeniedException:", accessDeniedException);
+        return ResultVO.fail(accessDeniedException.getMessage());
     }
 
     /**
@@ -128,7 +128,7 @@ public class ExceptionAdvice {
         PrintWriter pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
         log.error(sw.toString());
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR, exception.getMessage());
+        return ResultVO.fail(exception.getCode(), exception.getMessage());
     }
 
     /**
@@ -138,12 +138,9 @@ public class ExceptionAdvice {
      */
     @ResponseBody
     @ExceptionHandler(BusinessException.class)
-    public ResultVO exception(BusinessException exception) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        exception.printStackTrace(pw);
-        log.error(sw.toString());
-        return ResultVO.fail(HttpResult.BUSINESS_ERROR, exception.getMessage());
+    public ResultVO exception(BusinessException businessException) {
+        log.error("businessException:", businessException);
+        return ResultVO.fail(businessException.getCode(), businessException.getMessage());
     }
 
     /**
@@ -154,10 +151,7 @@ public class ExceptionAdvice {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public ResultVO exception(Exception exception) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        exception.printStackTrace(pw);
-        log.error(sw.toString());
+        log.error("exception:", exception);
         AccessUser accessUser = USER_INFO.get();
         String userId = accessUser == null ? "null" : accessUser.getUserId() == null ? "null" :
                 accessUser.getUserId().toString();

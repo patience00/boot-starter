@@ -19,81 +19,89 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ResultVO<T> implements Serializable {
 
-	@ApiModelProperty("请求状态码")
-	private Integer code;
+    @ApiModelProperty("请求状态码")
+    private Integer code;
 
-	@ApiModelProperty("请求数据")
-	private T data;
+    @ApiModelProperty("请求数据")
+    private T data;
 
-	private String message;
+    private String message;
 
-	/**
-	 * 请求成功
-	 *
-	 * @return
-	 */
-	public static <T> ResultVO<T> ok() {
-		return ResultVO.<T>builder()
-				.code(HttpResult.SUCCESS.getCode())
-				.message(HttpResult.SUCCESS.getMessage())
-				.build();
-	}
+    /**
+     * 请求成功
+     *
+     * @return
+     */
+    public static <T> ResultVO<T> ok() {
+        return ResultVO.<T>builder()
+                .code(HttpResult.SUCCESS.getCode())
+                .message(HttpResult.SUCCESS.getMessage())
+                .build();
+    }
 
-	public static <T> ResultVO<T> ok(T data) {
-		return ok(HttpResult.SUCCESS, data);
-	}
+    public static <T> ResultVO<T> ok(T data) {
+        return ok(HttpResult.SUCCESS, data);
+    }
 
-	public static <T> ResultVO<T> ok(HttpResult httpResult,
-	                                 T data) {
-		return ResultVO.<T>builder()
-				.code(httpResult.getCode())
-				.message(httpResult.getMessage())
-				.data(data)
-				.build();
-	}
+    public static <T> ResultVO<T> ok(BaseEnum baseEnum,
+                                     T data) {
+        return ResultVO.<T>builder()
+                .code(baseEnum.code())
+                .message(baseEnum.msg())
+                .data(data)
+                .build();
+    }
 
-	/**
-	 * 请求失败
-	 *
-	 * @return
-	 */
-	public static <T> ResultVO<T> fail() {
-		return ResultVO.<T>builder()
-				.code(HttpResult.FAIL.getCode())
-				.message(HttpResult.FAIL.getMessage())
-				.build();
-	}
+    /**
+     * 请求失败
+     *
+     * @return
+     */
+    public static <T> ResultVO<T> fail() {
+        return ResultVO.<T>builder()
+                .code(HttpResult.FAIL.getCode())
+                .message(HttpResult.FAIL.getMessage())
+                .build();
+    }
 
-	public static <T> ResultVO<T> fail(HttpResult httpResult) {
-		return fail(httpResult, null);
-	}
+    public static <T> ResultVO<T> fail(BaseEnum baseEnum) {
+        return fail(baseEnum, baseEnum.msg());
+    }
 
-	public static <T> ResultVO<T> fail(T data) {
-		return fail(HttpResult.FAIL, data);
-	}
+    public static <T> ResultVO<T> fail(T data) {
+        return fail(HttpResult.FAIL, data);
+    }
 
-	public static <T> ResultVO<T> fail(HttpResult httpResult,
-	                                   T data) {
-		return ResultVO.<T>builder()
-				.code(httpResult.getCode())
-				.message(httpResult.getMessage())
-				.data(data)
-				.build();
-	}
+    public static <T> ResultVO<T> fail(BaseEnum baseEnum,
+                                       T data) {
+        return ResultVO.<T>builder()
+                .code(baseEnum.code())
+                .message(baseEnum.msg())
+                .data(data)
+                .build();
+    }
 
-	public static <T> ResultVO<T> fail(HttpResult httpResult,
-									   String message) {
-		return ResultVO.<T>builder()
-				.code(httpResult.getCode())
-				.message(message)
-				.build();
-	}
+    public static <T> ResultVO<T> fail(BaseEnum baseEnum,
+                                       String message) {
+        return ResultVO.<T>builder()
+                .code(baseEnum.code())
+                .message(message)
+                .build();
+    }
 
-	public static <T> ResultVO<T> fail(String message) {
-		return ResultVO.<T>builder()
-				.code(HttpResult.FAIL.getCode())
-				.message(message)
-				.data(null)
-				.build();
-	}
+    public static <T> ResultVO<T> fail(String message) {
+        return ResultVO.<T>builder()
+                .code(BaseEnum.MSG_FAIL)
+                .message(message)
+                .data(null)
+                .build();
+    }
+
+    public static <T> ResultVO<T> fail(Integer code, String message) {
+        return ResultVO.<T>builder()
+                .code(code)
+                .message(message)
+                .data(null)
+                .build();
+    }
 }

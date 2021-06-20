@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.linchtech</groupId>
     <artifactId>boot-starter</artifactId>
-    <version>1.0.1-RELEASE</version>
+    <version>1.0.2-RELEASE</version>
     <name>boot-starter</name>
     <packaging>jar</packaging>
     <description>Linchtech's Spring Boot Starter to help you develop with SpringBoot quickly</description>

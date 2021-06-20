@@ -116,7 +116,8 @@ public class CustomResponseConfiguration implements ResponseBodyAdvice<Object>, 
 
         if (result && !CollectionUtils.isEmpty(rewriteProperties.getRewrite().getExcludePaths())) {
             String url = String.format("%s_%s", request.getMethod(), request.getURI().getPath());
-            result = rewriteProperties.getRewrite().getExcludePaths().stream().filter(StringUtils::hasLength).noneMatch(i -> url.matches(i.replaceAll("\\{[^/{}]+}", "[^/]+")));
+            result = rewriteProperties.getRewrite().getExcludePaths().stream().filter(StringUtils::hasLength).noneMatch(i -> url.matches(i.replaceAll(
+                    "\\{[^/{}]+}", "[^/]+")));
         }
         return result;
     }

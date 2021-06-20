@@ -7,7 +7,7 @@ import lombok.Getter;
  * @date 2018-07-23 10:24
  **/
 @Getter
-public enum HttpResult {
+public enum HttpResult implements BaseEnum{
 
     /**
      * 请求成功返回码.
@@ -38,5 +38,25 @@ public enum HttpResult {
     HttpResult(String message, Integer code) {
         this.code = code;
         this.message = message;
+    }
+
+    /**
+     * code
+     *
+     * @return code
+     */
+    @Override
+    public int code() {
+        return code;
+    }
+
+    /**
+     * msg
+     *
+     * @return msg
+     */
+    @Override
+    public String msg() {
+        return message;
     }
 }

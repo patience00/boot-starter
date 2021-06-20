@@ -1,6 +1,6 @@
 package com.linchtech.boot.starter.common.exceptions;
 
-import com.linchtech.boot.starter.common.HttpResult;
+import com.linchtech.boot.starter.common.BaseEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,7 +19,9 @@ public class BusinessException extends RuntimeException {
         this.message = message;
     }
 
-    public static BusinessException build(String message) {
-        return new BusinessException(HttpResult.FAIL.getCode(), message);
+    public BusinessException(BaseEnum baseEnum) {
+        this.code = baseEnum.code();
+        this.message = baseEnum.msg();
     }
+
 }

@@ -1,6 +1,6 @@
 package com.linchtech.boot.starter.common.exceptions;
 
-import com.linchtech.boot.starter.common.HttpResult;
+import com.linchtech.boot.starter.common.BaseEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,8 +20,9 @@ public class ParameterException extends RuntimeException {
         this.message = message;
     }
 
-    public static ParameterException build(String message) {
-        return new ParameterException(HttpResult.FAIL.getCode(), message);
+    public ParameterException(BaseEnum baseEnum) {
+        this.code = baseEnum.code();
+        this.message = baseEnum.msg();
     }
 
 }
