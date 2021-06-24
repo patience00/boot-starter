@@ -47,7 +47,7 @@ public class CustomResponseConfiguration implements ResponseBodyAdvice<Object>, 
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new WebInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(new WebInterceptor()).addPathPatterns("/**").excludePathPatterns("/**/swagger");
     }
 
     @Override
