@@ -44,13 +44,22 @@ public class ExceptionAdvice {
      * @return
      */
     @ResponseBody
-    @ExceptionHandler({
-            HttpMessageNotReadableException.class,
-            MethodArgumentTypeMismatchException.class
-    })
-    public ResultVO methodArgumentNotValidException(Exception exception) {
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    public ResultVO methodArgumentNotValidException(HttpMessageNotReadableException exception) {
         log.error(exception.toString());
         return ResultVO.fail(HttpResult.PARAMETER_ERROR, exception.getMessage());
+    }
+
+    /**
+     * 参数异常拦截.
+     *
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResultVO methodArgumentNotValidException(MethodArgumentTypeMismatchException exception) {
+        log.error(exception.toString());
+        return ResultVO.fail(HttpResult.PARAMETER_ERROR, exception.getName());
     }
 
     /**

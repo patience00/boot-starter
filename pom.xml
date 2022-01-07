@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.linchtech</groupId>
     <artifactId>boot-starter</artifactId>
-    <version>1.0.3-RELEASE</version>
+    <version>1.0.4-RELEASE</version>
     <name>boot-starter</name>
     <packaging>jar</packaging>
     <description>Linchtech's Spring Boot Starter to help you develop with SpringBoot quickly</description>
@@ -92,6 +92,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.16</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
