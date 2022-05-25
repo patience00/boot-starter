@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.linchtech</groupId>
     <artifactId>boot-starter</artifactId>
-    <version>1.0.6-RELEASE</version>
+    <version>1.0.8-RELEASE</version>
     <name>boot-starter</name>
     <packaging>jar</packaging>
     <description>Linchtech's Spring Boot Starter to help you develop with SpringBoot quickly</description>
@@ -31,6 +31,10 @@
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -60,7 +64,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.10</version>
+            <version>1.2.9</version>
         </dependency>
         <!--elasticSearch-->
         <dependency>
@@ -72,6 +76,12 @@
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
             <optional>true</optional>
         </dependency>
         <!--MongoDB-->

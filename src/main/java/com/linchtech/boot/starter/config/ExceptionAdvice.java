@@ -1,8 +1,8 @@
 package com.linchtech.boot.starter.config;
 
 import com.linchtech.boot.starter.common.AccessUser;
-import com.linchtech.boot.starter.common.HttpResult;
 import com.linchtech.boot.starter.common.ResultVO;
+import com.linchtech.boot.starter.common.SystemErrorCode;
 import com.linchtech.boot.starter.common.exceptions.BusinessException;
 import com.linchtech.boot.starter.common.exceptions.ParameterException;
 import com.linchtech.boot.starter.utils.DingTalkMessage;
@@ -47,7 +47,7 @@ public class ExceptionAdvice {
     @ExceptionHandler({HttpMessageNotReadableException.class})
     public ResultVO methodArgumentNotValidException(HttpMessageNotReadableException exception) {
         log.error(exception.toString());
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR, exception.getMessage());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, exception.getMessage());
     }
 
     /**
@@ -59,7 +59,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResultVO methodArgumentNotValidException(MethodArgumentTypeMismatchException exception) {
         log.error(exception.toString());
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR, exception.getName());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, exception.getName());
     }
 
     /**
@@ -70,7 +70,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR,
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR,
                 e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
@@ -79,7 +79,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO requestParameterException(MissingServletRequestParameterException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR, e.getParameterName());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, e.getParameterName());
     }
 
     /**
@@ -90,7 +90,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(HttpResult.METHOD_ERROR);
+        return ResultVO.fail(SystemErrorCode.METHOD_NO_SUPPORT, e.getMessage());
     }
 
     /**
@@ -101,7 +101,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO bindException(BindException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR,
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR,
                 e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
@@ -114,7 +114,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResultVO methodArgumentNotValidException(DataIntegrityViolationException dataIntegrityViolationException) {
         log.error("dataIntegrityViolationException:", dataIntegrityViolationException);
-        return ResultVO.fail(HttpResult.PARAMETER_ERROR);
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, dataIntegrityViolationException.getMessage());
     }
 
     @ResponseBody
@@ -167,6 +167,6 @@ public class ExceptionAdvice {
         String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
                 accessUser.getRequestUri();
         dingTalkMessage.sendErrorMsg(exception, userId, uri);
-        return ResultVO.fail(HttpResult.SYSTEM_ERROR);
+        return ResultVO.fail(SystemErrorCode.UNKNOWN_ERROR, exception.getMessage());
     }
 }
