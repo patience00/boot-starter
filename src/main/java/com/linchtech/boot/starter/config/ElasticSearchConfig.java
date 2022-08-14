@@ -25,13 +25,15 @@ public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
     private String uris;
     private String username;
     private String password;
+    private Integer connectTimeout;
+    private Integer socketTimeout;
 
     @Override
     public RestHighLevelClient elasticsearchClient() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(uris)
-                .withConnectTimeout(Duration.ofSeconds(5))
-                .withSocketTimeout(Duration.ofSeconds(3))
+                .withConnectTimeout(Duration.ofSeconds(connectTimeout))
+                .withSocketTimeout(Duration.ofSeconds(socketTimeout))
                 .withBasicAuth(username, password).build();
         return RestClients.create(clientConfiguration).rest();
     }
