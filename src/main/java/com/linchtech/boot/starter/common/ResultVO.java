@@ -47,11 +47,6 @@ public class ResultVO<T> implements Serializable {
     }
 
     public static <T> ResultVO<T> ok(T data) {
-        return ok(data);
-    }
-
-    public static <T> ResultVO<T> ok(BaseEnum baseEnum,
-                                     T data) {
         return ResultVO.<T>builder()
                 .data(data)
                 .build();
