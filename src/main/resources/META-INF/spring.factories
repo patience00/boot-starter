@@ -5,4 +5,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.linchtech.boot.starter.utils.DingTalkMessage,\
   com.linchtech.boot.starter.utils.RedisHelper,\
   com.linchtech.boot.starter.config.ExceptionAdvice,\
+  com.linchtech.boot.starter.config.ScheduleConfig,\
+  com.linchtech.boot.starter.config.RedisConfig,\
   com.linchtech.boot.starter.config.SwaggerConfig
