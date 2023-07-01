@@ -21,11 +21,12 @@ import java.io.Serializable;
 public class ResultVO<T> implements Serializable {
 
     private static final String SUCCESS_MSG = "请求成功";
-    private static final Integer MSG_OK = 0;
+    private static final Integer CODE_OK = 0;
+    private static final Integer CODE_FAIL = -1;
 
     // 响应码
     @JsonProperty("code")
-    private Integer code = MSG_OK;
+    private Integer code = CODE_OK;
 
     @ApiModelProperty("请求数据")
     private T data;
@@ -41,13 +42,14 @@ public class ResultVO<T> implements Serializable {
      */
     public static <T> ResultVO<T> ok() {
         return ResultVO.<T>builder()
-                .code(MSG_OK)
+                .code(CODE_OK)
                 .msg(SUCCESS_MSG)
                 .build();
     }
 
     public static <T> ResultVO<T> ok(T data) {
         return ResultVO.<T>builder()
+                .code(CODE_OK)
                 .data(data)
                 .build();
     }
@@ -59,6 +61,7 @@ public class ResultVO<T> implements Serializable {
      */
     public static <T> ResultVO<T> fail() {
         return ResultVO.<T>builder()
+                .code(CODE_FAIL)
                 .build();
     }
 
@@ -92,6 +95,7 @@ public class ResultVO<T> implements Serializable {
     public static <T> ResultVO<T> fail(String message) {
         return ResultVO.<T>builder()
                 .msg(message)
+                .code(CODE_FAIL)
                 .data(null)
                 .build();
     }
