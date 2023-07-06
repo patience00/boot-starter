@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.linchtech</groupId>
     <artifactId>boot-starter</artifactId>
-    <version>1.0.15-RELEASE</version>
+    <version>1.0.16-RELEASE</version>
     <name>boot-starter</name>
     <packaging>jar</packaging>
     <description>Linchtech's Spring Boot Starter to help you develop with SpringBoot quickly</description>
@@ -180,7 +180,12 @@
             <version>4.1.0</version>
             <optional>true</optional>
         </dependency>
-
+        <!-- dingtalk需要依赖httpclient包 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
     </dependencies>
 
     <build>
