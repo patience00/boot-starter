@@ -3,6 +3,7 @@ package com.linchtech.boot.starter.common.annotations;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Collection;
 
 /**
  * @author 107
@@ -42,6 +43,15 @@ public class EnumValuesValidator implements ConstraintValidator<EnumValueCheck,O
             for (String allowedValue : this.enumValueCheck.allowedValues()) {
                 if (value.toString().equals(allowedValue)) {
                     return true;
+                }
+            }
+        }
+        // 判断集合类型参数
+        if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            for (String allowedValue : this.enumValueCheck.allowedValues()) {
+                if (!collection.contains(allowedValue)) {
+                    return false;
                 }
             }
         }
