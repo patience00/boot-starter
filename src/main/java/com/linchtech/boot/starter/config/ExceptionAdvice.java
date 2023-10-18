@@ -59,7 +59,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResultVO methodArgumentNotValidException(MethodArgumentTypeMismatchException exception) {
         log.error(exception.toString());
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, exception.getName());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, SystemErrorCode.VALIDATE_ERROR.getMsg()+":"+exception.getName());
     }
 
     /**
@@ -79,7 +79,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO requestParameterException(MissingServletRequestParameterException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, e.getParameterName());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, SystemErrorCode.VALIDATE_ERROR.getMsg()+":"+e.getParameterName());
     }
 
     /**
@@ -102,11 +102,11 @@ public class ExceptionAdvice {
     public ResultVO bindException(BindException e) {
         log.error(e.getMessage(), e);
         return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR,
-                e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+                e.getBindingResult().getFieldError().getField()+":"+ e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     /**
-     * 参数异常拦截.
+     * 数据库异常拦截.数据重复违反唯一约束
      *
      * @return
      */
