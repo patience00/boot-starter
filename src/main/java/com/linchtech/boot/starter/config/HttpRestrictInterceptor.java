@@ -2,7 +2,7 @@
 //
 // import com.fasterxml.jackson.databind.ObjectMapper;
 // import com.linchtech.boot.starter.common.HttpResult;
-// import com.linchtech.boot.starter.common.ResultVO;
+// import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 // import com.linchtech.boot.starter.properties.HttpProperties;
 // import lombok.extern.slf4j.Slf4j;
 // import org.springframework.util.CollectionUtils;

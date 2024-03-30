@@ -3,7 +3,7 @@
 // import com.fasterxml.jackson.core.JsonProcessingException;
 // import com.fasterxml.jackson.databind.ObjectMapper;
 // import com.google.common.collect.Lists;
-// import com.linchtech.boot.starter.common.ResultVO;
+// import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 // import com.linchtech.boot.starter.properties.HttpProperties;
 // import lombok.extern.slf4j.Slf4j;
 // import org.springframework.boot.context.properties.EnableConfigurationProperties;

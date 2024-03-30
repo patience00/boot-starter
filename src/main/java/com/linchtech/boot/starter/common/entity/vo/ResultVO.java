@@ -1,6 +1,8 @@
-package com.linchtech.boot.starter.common;
+package com.linchtech.boot.starter.common.entity.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.linchtech.boot.starter.common.BaseEnum;
+import com.linchtech.boot.starter.common.SystemErrorCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

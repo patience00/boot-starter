@@ -1,7 +1,7 @@
 package com.linchtech.boot.starter.config;
 
 import com.linchtech.boot.starter.common.AccessUser;
-import com.linchtech.boot.starter.common.ResultVO;
+import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 import com.linchtech.boot.starter.common.SystemErrorCode;
 import com.linchtech.boot.starter.common.exceptions.BusinessException;
 import com.linchtech.boot.starter.common.exceptions.ParameterException;

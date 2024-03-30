@@ -1,7 +1,7 @@
 package com.linchtech.boot.starter.config;
 
 import com.fasterxml.classmate.TypeResolver;
-import com.linchtech.boot.starter.common.ResultVO;
+import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 import com.linchtech.boot.starter.properties.SwaggerProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
