@@ -71,7 +71,7 @@ public class ExceptionAdvice {
     public ResultVO methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
         return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR,
-                e.getBindingResult().getFieldError().getField()+":"+ e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+                e.getBindingResult().getFieldError().getField()+":"+e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
