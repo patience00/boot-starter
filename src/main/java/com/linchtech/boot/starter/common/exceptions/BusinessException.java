@@ -1,6 +1,7 @@
 package com.linchtech.boot.starter.common.exceptions;
 
 import com.linchtech.boot.starter.common.BaseEnum;
+import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,4 +25,8 @@ public class BusinessException extends RuntimeException {
         this.message = baseEnum.msg();
     }
 
+    public BusinessException(String message) {
+        this.code = ResultVO.CODE_FAIL;
+        this.message = message;
+    }
 }

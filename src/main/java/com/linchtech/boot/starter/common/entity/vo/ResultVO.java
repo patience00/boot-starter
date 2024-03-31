@@ -24,7 +24,7 @@ public class ResultVO<T> implements Serializable {
 
     private static final String SUCCESS_MSG = "请求成功";
     private static final Integer CODE_OK = 0;
-    private static final Integer CODE_FAIL = -1;
+    public static final Integer CODE_FAIL = -1;
 
     // 响应码
     @JsonProperty("code")
