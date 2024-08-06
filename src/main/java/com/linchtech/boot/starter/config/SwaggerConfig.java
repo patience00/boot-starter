@@ -4,6 +4,7 @@ import com.fasterxml.classmate.TypeResolver;
 import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 import com.linchtech.boot.starter.properties.SwaggerProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,7 @@ import java.util.Map;
 @Configuration
 @EnableSwagger2
 @EnableConfigurationProperties(SwaggerProperties.class)
+@ConditionalOnClass(name = {"io.swagger.annotations.ApiOperation"})
 public class SwaggerConfig {
 
     /**
