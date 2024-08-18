@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.AccessDeniedException;
@@ -60,7 +61,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResultVO methodArgumentNotValidException(MethodArgumentTypeMismatchException exception) {
         log.error(exception.toString());
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, SystemErrorCode.VALIDATE_ERROR.getMsg()+":"+exception.getName());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, SystemErrorCode.VALIDATE_ERROR.getMsg() + ":" + exception.getName());
     }
 
     /**
@@ -71,8 +72,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR,
-                e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -80,7 +80,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO requestParameterException(MissingServletRequestParameterException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, SystemErrorCode.VALIDATE_ERROR.getMsg()+":"+e.getParameterName());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, SystemErrorCode.VALIDATE_ERROR.getMsg() + ":" + e.getParameterName());
     }
 
     /**
@@ -102,8 +102,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultVO bindException(BindException e) {
         log.error(e.getMessage(), e);
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR,
-                e.getBindingResult().getFieldError().getField()+":"+ e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, e.getBindingResult().getFieldError().getField() + ":" + e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 
     /**
@@ -160,20 +159,19 @@ public class ExceptionAdvice {
      */
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ResultVO exception(Exception exception,WebRequest request) {
+    public ResultVO exception(Exception exception, WebRequest request, HttpServletRequest servletRequest) {
         // 获取请求的URI
         String uri = null;
         try {
-            uri = request.getDescription(false).toString();
+            uri = request.getDescription(false);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
         log.error("exception:", exception);
         AccessUser accessUser = USER_INFO.get();
-        String userId = accessUser == null ? "null" : accessUser.getUserId() == null ? "null" :
-                accessUser.getUserId().toString();
-//        String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
-//                accessUser.getRequestUri();
+        String userId = accessUser == null ? "null" : accessUser.getUserId() == null ? "null" : accessUser.getUserId().toString();
+        //        String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
+        //                accessUser.getRequestUri();
         dingTalkMessage.sendErrorMsg(exception, userId, uri);
         return ResultVO.fail(SystemErrorCode.UNKNOWN_ERROR, exception.getMessage());
     }
