@@ -1,8 +1,8 @@
 package com.linchtech.boot.starter.config;
 
 import com.linchtech.boot.starter.common.AccessUser;
-import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 import com.linchtech.boot.starter.common.SystemErrorCode;
+import com.linchtech.boot.starter.common.entity.vo.ResultVO;
 import com.linchtech.boot.starter.common.exceptions.BusinessException;
 import com.linchtech.boot.starter.common.exceptions.ParameterException;
 import com.linchtech.boot.starter.utils.DingTalkMessage;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.PrintWriter;
@@ -159,13 +160,20 @@ public class ExceptionAdvice {
      */
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ResultVO exception(Exception exception) {
+    public ResultVO exception(Exception exception,WebRequest request) {
+        // 获取请求的URI
+        String uri = null;
+        try {
+            uri = request.getDescription(false).toString();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
         log.error("exception:", exception);
         AccessUser accessUser = USER_INFO.get();
         String userId = accessUser == null ? "null" : accessUser.getUserId() == null ? "null" :
                 accessUser.getUserId().toString();
-        String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
-                accessUser.getRequestUri();
+//        String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
+//                accessUser.getRequestUri();
         dingTalkMessage.sendErrorMsg(exception, userId, uri);
         return ResultVO.fail(SystemErrorCode.UNKNOWN_ERROR, exception.getMessage());
     }
