@@ -21,7 +21,10 @@ import org.springframework.util.CollectionUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
+
+import static com.linchtech.boot.starter.utils.DateUtils.DATE_TIME_PATTERN;
 
 /**
  * @author 107
@@ -98,6 +101,8 @@ public class DingTalkMessage {
     public void sendErrorMsg(Exception e, String userId, String requestUri) {
         StackTraceElement[] stackTrace = e.getStackTrace();
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("时间:");
+        stringBuilder.append(DateUtils.formatDate(new Date(),DATE_TIME_PATTERN));
         stringBuilder.append("userId:");
         stringBuilder.append(userId);
         stringBuilder.append("\n");
