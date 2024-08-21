@@ -173,6 +173,6 @@ public class ExceptionAdvice {
         //        String uri = accessUser == null ? "null" : accessUser.getRequestUri() == null ? "null" :
         //                accessUser.getRequestUri();
         dingTalkMessage.sendErrorMsg(exception, userId, uri);
-        return ResultVO.fail(SystemErrorCode.UNKNOWN_ERROR, exception.getMessage());
+        return ResultVO.fail(SystemErrorCode.UNKNOWN_ERROR, SystemErrorCode.UNKNOWN_ERROR.getMsg());
     }
 }
