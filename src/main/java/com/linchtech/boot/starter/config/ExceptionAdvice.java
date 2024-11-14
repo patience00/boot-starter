@@ -12,6 +12,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 
 import static com.linchtech.boot.starter.config.WebInterceptor.USER_INFO;
 
@@ -71,8 +74,11 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResultVO methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        log.error(e.getMessage(), e);
-        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
+        ObjectError objectError = allErrors.get(0);
+        FieldError fieldError = (FieldError) objectError;
+        log.error("参数校验异常 {}:{} ", fieldError.getField(), fieldError.getRejectedValue());
+        return ResultVO.fail(SystemErrorCode.VALIDATE_ERROR, objectError.getDefaultMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
