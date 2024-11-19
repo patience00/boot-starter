@@ -48,7 +48,10 @@ public class DingTalkMessage {
      * @param content
      */
     public void sendTextToAdmin(String content) {
-        sendText(content, systemProperties.getDingTalk().getAtMobiles());
+        SystemProperties.DingTalkConfig dingTalk = systemProperties.getDingTalk();
+        if (!dingTalk.getEnv().equals("dev")) {
+            sendText(content, dingTalk.getAtMobiles());
+        }
     }
 
     /**
@@ -68,12 +71,8 @@ public class DingTalkMessage {
      * @param at
      */
     public void sendText(String content, List<String> at) {
-        DingdingMessageTextDTO.MessageTextDTO textDTO = DingdingMessageTextDTO.MessageTextDTO.builder()
-                .content(content).build();
-        DingdingMessageTextDTO messageTextDTO = DingdingMessageTextDTO.builder()
-                .msgtype("text")
-                .text(textDTO)
-                .build();
+        DingdingMessageTextDTO.MessageTextDTO textDTO = DingdingMessageTextDTO.MessageTextDTO.builder().content(content).build();
+        DingdingMessageTextDTO messageTextDTO = DingdingMessageTextDTO.builder().msgtype("text").text(textDTO).build();
         if (CollectionUtils.isEmpty(at)) {
             messageTextDTO.setAt(MessageAtDTO.builder().isAtAll(true).build());
         } else {
@@ -99,33 +98,37 @@ public class DingTalkMessage {
      * @param requestUri
      */
     public void sendErrorMsg(Exception e, String userId, String requestUri) {
-        StackTraceElement[] stackTrace = e.getStackTrace();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("时间:");
-        stringBuilder.append(DateUtils.formatDate(new Date(),DATE_TIME_PATTERN));
-        stringBuilder.append("userId:");
-        stringBuilder.append(userId);
-        stringBuilder.append("\n");
-        stringBuilder.append("requestUri:");
-        stringBuilder.append(requestUri);
-        stringBuilder.append("\n");
-        stringBuilder.append(e.toString());
-        stringBuilder.append("\n");
-        for (int i = 0; i < stackTrace.length; i++) {
-            StackTraceElement stackTraceElement = stackTrace[i];
-            String trace = stackTraceElement.toString();
-            if (trace.contains(systemProperties.getDingTalk().getBoldPackage())) {
-                stringBuilder.append("**");
-                stringBuilder.append(stackTraceElement.toString());
-                stringBuilder.append("**");
-            }
-            stringBuilder.append(stackTraceElement.toString());
+        SystemProperties.DingTalkConfig dingTalk = systemProperties.getDingTalk();
+        if (!dingTalk.getEnv().equals("dev")) {
+            StackTraceElement[] stackTrace = e.getStackTrace();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("时间:");
+            stringBuilder.append(DateUtils.formatDate(new Date(), DATE_TIME_PATTERN));
             stringBuilder.append("\n");
-            if (i > 10) {
-                break;
+            stringBuilder.append("userId:");
+            stringBuilder.append(userId);
+            stringBuilder.append("\n");
+            stringBuilder.append("requestUri:");
+            stringBuilder.append(requestUri);
+            stringBuilder.append("\n");
+            stringBuilder.append(e);
+            stringBuilder.append("\n");
+            for (int i = 0; i < stackTrace.length; i++) {
+                StackTraceElement stackTraceElement = stackTrace[i];
+                String trace = stackTraceElement.toString();
+                if (trace.contains(dingTalk.getBoldPackage())) {
+                    stringBuilder.append("**");
+                    stringBuilder.append(stackTraceElement);
+                    stringBuilder.append("**");
+                }
+                stringBuilder.append(stackTraceElement);
+                stringBuilder.append("\n");
+                if (i > 10) {
+                    break;
+                }
             }
+            sendMarkDown(stringBuilder.toString(), "生产异常", 2, dingTalk.getAtMobiles());
         }
-        sendMarkDown(stringBuilder.toString(), "生产异常", 2, systemProperties.getDingTalk().getAtMobiles());
     }
 
     public void sendLink(String content, String title, String picUrl, String messageUrl) {
@@ -139,10 +142,7 @@ public class DingTalkMessage {
      * @param title
      * @param titleLevel
      */
-    public void sendMarkDown(String content,
-                             String title,
-                             Integer titleLevel,
-                             List<String> atMobiles) {
+    public void sendMarkDown(String content, String title, Integer titleLevel, List<String> atMobiles) {
         StringBuilder textBuilder = new StringBuilder();
         // 多少级标题,就有几个#
         for (int i = 0; i < titleLevel; i++) {
@@ -161,26 +161,13 @@ public class DingTalkMessage {
         textBuilder.append(content);
         textBuilder.append("\n");
 
-        DingdingMessageMarkdownDTO.MessageMarkdownDTO markdownDTO =
-                DingdingMessageMarkdownDTO.MessageMarkdownDTO.builder()
-                        .title(title)
-                        .text(textBuilder.toString())
-                        .build();
-        DingdingMessageMarkdownDTO messageMarkdownDTO = DingdingMessageMarkdownDTO.builder()
-                .markdown(markdownDTO)
-                .msgtype("markdown")
-                .build();
+        DingdingMessageMarkdownDTO.MessageMarkdownDTO markdownDTO = DingdingMessageMarkdownDTO.MessageMarkdownDTO.builder().title(title).text(textBuilder.toString()).build();
+        DingdingMessageMarkdownDTO messageMarkdownDTO = DingdingMessageMarkdownDTO.builder().markdown(markdownDTO).msgtype("markdown").build();
         if (CollectionUtils.isEmpty(atMobiles)) {
-            MessageAtDTO atDTO = MessageAtDTO.builder()
-                    .isAtAll(true)
-                    .atMobiles(atMobiles)
-                    .build();
+            MessageAtDTO atDTO = MessageAtDTO.builder().isAtAll(true).atMobiles(atMobiles).build();
             messageMarkdownDTO.setAt(atDTO);
         } else {
-            MessageAtDTO atDTO = MessageAtDTO.builder()
-                    .isAtAll(false)
-                    .atMobiles(atMobiles)
-                    .build();
+            MessageAtDTO atDTO = MessageAtDTO.builder().isAtAll(false).atMobiles(atMobiles).build();
             messageMarkdownDTO.setAt(atDTO);
         }
         send(messageMarkdownDTO);
@@ -197,9 +184,7 @@ public class DingTalkMessage {
         long timeMillis = System.currentTimeMillis();
         try {
             CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost("https://oapi.dingtalk" +
-                    ".com/robot/send?access_token=" + systemProperties.getDingTalk().getToken() + "&timestamp=" + timeMillis + "&sign" +
-                    "=" + sign(timeMillis));
+            HttpPost httpPost = new HttpPost("https://oapi.dingtalk" + ".com/robot/send?access_token=" + systemProperties.getDingTalk().getToken() + "&timestamp=" + timeMillis + "&sign" + "=" + sign(timeMillis));
 
             String requestParam = JSON.toJSONString(params);
             StringEntity requestEntity = new StringEntity(requestParam, "utf-8");

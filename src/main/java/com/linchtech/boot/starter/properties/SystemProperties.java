@@ -59,5 +59,7 @@ public class SystemProperties {
          */
         private String boldPackage;
 
+        private String env;
+
     }
 }
