@@ -7,6 +7,7 @@ import com.linchtech.boot.starter.common.exceptions.BusinessException;
 import com.linchtech.boot.starter.common.exceptions.ParameterException;
 import com.linchtech.boot.starter.utils.DingTalkMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -144,6 +145,17 @@ public class ExceptionAdvice {
         exception.printStackTrace(pw);
         log.error(sw.toString());
         return ResultVO.fail(exception.getCode(), exception.getMessage());
+    }
+
+    /**
+     * 业务异常拦截.
+     *
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(AuthenticationException.class)
+    public ResultVO exception(AuthenticationException authenticationException) {
+        return ResultVO.fail(SystemErrorCode.TOKEN_EXPIRED.getCode(), authenticationException.getMessage());
     }
 
     /**

@@ -15,6 +15,7 @@ public enum SystemErrorCode {
     VALIDATE_ERROR(10001, "参数校验失败"),
 
     UNAUTHORIZED_ERROR(10002, "您没有权限访问"),
+    TOKEN_EXPIRED(10401, "token已过期"),
     /**
      * HttpRequestMethodNotSupportedException
      */
