@@ -46,6 +46,7 @@ public final class DateUtils {
     public static final String MINUTE_PATTERN2 = "yyyy-M-d HH:mm";
     public static final String MINUTE_PATTERN3 = "yyyy年MM月dd日 HH:mm:ss";
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_PATTERN4 = "yyyy-MM-dd+HH:mm:ss";
     public static final String DATE_TIME_PATTERN2 = "yyyy-M-d HH:mm:ss";
     public static final String DATE_TIME_PATTERN3 = "yyyy.MM.dd HH:mm:ss";
     public static final String DATE_TIME_PATTERN_SLASH = "yyyy/MM/dd HH:mm:ss";
@@ -74,6 +75,7 @@ public final class DateUtils {
             MINUTE_PATTERN3,
             DATE_TIME_PATTERN2,
             DATE_TIME_PATTERN3,
+            DATE_TIME_PATTERN4,
             DATE_PATTERN,
             MINUTE_PATTERN,
             DATE_TIME_PATTERN,

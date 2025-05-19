@@ -156,7 +156,7 @@ public class ExceptionAdvice {
     @ResponseBody
     @ExceptionHandler(BusinessException.class)
     public ResultVO exception(BusinessException businessException) {
-        log.error("businessException:", businessException);
+        log.error("businessException:", businessException.getMessage());
         return ResultVO.fail(businessException.getCode(), businessException.getMessage());
     }
 
