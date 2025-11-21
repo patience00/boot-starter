@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.patience00</groupId>
     <artifactId>boot-starter</artifactId>
-    <version>1.0.33-RELEASE</version>
+    <version>1.0.34-RELEASE</version>
     <name>boot-starter</name>
     <packaging>jar</packaging>
     <description>Linchtech's Spring Boot Starter to help you develop with SpringBoot quickly</description>
@@ -137,7 +137,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.68</version>
+            <version>1.2.83</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
